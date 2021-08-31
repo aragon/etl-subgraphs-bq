@@ -1,0 +1,13 @@
+# Process Name
+PROCESS_NAME: govern_daos # used for BQ_TABLE and QUERY_PATH
+
+# Govern Mainnet
+API_URL: 'https://api.thegraph.com/subgraphs/name/aragon/aragon-govern-mainnet'
+
+# Queries Directory
+QUERY_DIR: 'queries'
+
+# Big Query
+BQ_DATASET: 'subgraphs'
+
+GOOGLE_APPLICATION_CREDENTIALS: '.key/aragon-analytics-f4f193b8ab5f.json'
