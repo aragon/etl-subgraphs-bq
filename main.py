@@ -6,14 +6,14 @@ from utils._local_utils import load_env_vars
 from utils.the_graph import GraphQuery
 
 ## Will only be used in local execution
-ENV_VARS_PATH = 'env_vars/court_guardians.yaml'
+#ENV_VARS_PATH = 'env_vars/court_guardians.yaml'
 #ENV_VARS_PATH = 'env_vars/govern_daos.yaml'
 #ENV_VARS_PATH = 'env_vars/govern_executions.yaml'
 
 def main(env_vars_path=ENV_VARS_PATH, testing_mode=True):
-    print(f'Setting env_vars: {env_vars_path}')
+    #print(f'Setting env_vars: {env_vars_path}')
     print(f'TESTING_MODE: {testing_mode}')
-    load_env_vars(env_vars_path) 
+    #load_env_vars(env_vars_path) 
     # Import GCP after setting env_vars (credentials)
     from utils.bq import BQ_table
 
