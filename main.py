@@ -11,7 +11,8 @@ ENV_VARS_PATH = 'env_vars/court_guardians.yaml'
 #ENV_VARS_PATH = 'env_vars/govern_executions.yaml'
 
 def main(env_vars_path=ENV_VARS_PATH, testing_mode=True):
-    print('Setting env_vars...')
+    print(f'Setting env_vars: {env_vars_path}')
+    print(f'TESTING_MODE: {testing_mode}')
     load_env_vars(env_vars_path) 
     # Import GCP after setting env_vars (credentials)
     from utils.bq import BQ_table
@@ -45,7 +46,8 @@ def main(env_vars_path=ENV_VARS_PATH, testing_mode=True):
     if errs:
         return f'Execution ended with {len(errs)} errors. Check Logging.'
     
-    return f'Execution succeded.'
+    
+    return f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}'
 
 
 print(main(testing_mode=True))
