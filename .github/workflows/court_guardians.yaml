@@ -30,3 +30,5 @@ jobs:
           BQ_DATASET: subgraphs
           BQ_TABLE: guardians
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
+      - name: "Check google key env_var"
+        run: echo $GOOGLE_APPLICATION_CREDENTIALS
