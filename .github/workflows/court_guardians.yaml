@@ -17,8 +17,6 @@ jobs:
         run: echo -n $GOOGLE_API_KEY | base64 -d >> ~/.google_api_key
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      - name: "Check google key"
-        run: tail ~/.google_api_key
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
@@ -30,5 +28,3 @@ jobs:
           BQ_DATASET: subgraphs
           BQ_TABLE: guardians
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
-      - name: "Check google key env_var"
-        run: echo $GOOGLE_APPLICATION_CREDENTIALS
