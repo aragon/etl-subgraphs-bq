@@ -3,9 +3,20 @@ import typing
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 import pandas as pd
+from pathlib import Path
+import os
 
 BQ_ETH_LOGS = "`bigquery-public-data.crypto_ethereum.logs`"
 
+def reassing_key_env_var():
+    GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+    if '~' in GOOGLE_APPLICATION_CREDENTIALS:
+        # As it's relative path to home, reset env var
+        GOOGLE_APPLICATION_CREDENTIALS = Path(GOOGLE_APPLICATION_CREDENTIALS).expanduser().as_posix()
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = GOOGLE_APPLICATION_CREDENTIALS
+
+
+reassing_key_env_var()
 # Construct a BigQuery client object.
 client = bigquery.Client()
 project = client.project
