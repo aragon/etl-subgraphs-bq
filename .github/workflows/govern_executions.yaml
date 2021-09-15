@@ -1,4 +1,4 @@
-name: govern daos
+name: govern executions
 on:
   workflow_dispatch:
   schedule:
