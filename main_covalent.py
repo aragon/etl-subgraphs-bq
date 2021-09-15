@@ -11,6 +11,7 @@ def main(testing_mode=True):
 
     COVALENT_API_KEY = os.getenv('COVALENT_API_KEY')
     correct_env_var('COVALENT_API_KEY')
+    print(COVALENT_API_KEY)
     CHAIN_ID = os.getenv('CHAIN_ID')
     BQ_DATASET = os.getenv('BQ_DATASET')
     BQ_TABLE = os.getenv('BQ_TABLE')
