@@ -2,15 +2,15 @@ from utils.covalent import Query
 import os
 from dotenv import load_dotenv
 from utils.argparser import args
+from utils.utils import correct_env_var
 
 
 def main(testing_mode=True):
-    print(f"Loading env_vars from {ENV_VARS_PATH}")
-    load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
 
     from utils.bq import BQ_table # load after env-vars due to google creds.
 
-    COVALENT_KEY = os.getenv('COVALENT_KEY')
+    COVALENT_API_KEY = os.getenv('COVALENT_API_KEY')
+    correct_env_var('COVALENT_API_KEY')
     CHAIN_ID = os.getenv('CHAIN_ID')
     BQ_DATASET = os.getenv('BQ_DATASET')
     BQ_TABLE = os.getenv('BQ_TABLE')
@@ -22,7 +22,7 @@ def main(testing_mode=True):
 
     # Create session
     q = Query(
-        api_key=COVALENT_KEY
+        api_key=COVALENT_API_KEY
     )
 
     r = q.get_log_events_by_contract_address(
@@ -45,10 +45,10 @@ def main(testing_mode=True):
 
     errs = table.uplaoad_df_to_bq(df)
     if errs:
-        print(f'Execution ended with {len(errs)} errors. Check Logging. Table: {table.table_id}')
+        return f'Execution ended with {len(errs)} errors. Check Logging. Table: {table.table_id}'
 
-    print(f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}')
-    print()
+    return f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}'
+    
 
 _ENV_VARS_PATH = './env_vars/mumbai_client_daos.env'
 #_ENV_VARS_PATH = './env_vars/polygon_client_daos.env'
@@ -58,6 +58,7 @@ load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
 
 if args.local:
     # Set creds
-    os.environ['COVALENT_KEY'] = str(open(os.getenv('LOCAL_COVALENT_KEY_PATH')).read())
+    os.environ['COVALENT_API_KEY'] = str(open(os.getenv('LOCAL_COVALENT_KEY_PATH')).read())
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')    
 
 print(main(testing_mode=args.testing))

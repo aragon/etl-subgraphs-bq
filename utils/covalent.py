@@ -2,9 +2,7 @@ from .covalent_api import Session, ClassA
 import pandas as pd
 
 class Query:
-    # TODO: paginate query
     def __init__(self, api_key):
-        print(api_key)
         self.session = Session(
             server_url='https://api.covalenthq.com',
             api_key=api_key
