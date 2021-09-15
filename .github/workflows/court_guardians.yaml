@@ -20,11 +20,11 @@ jobs:
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
-        run: python main.py
+        run: python main.py --test True --local False --env-vars ./env_vars/court_guardians.env
         env:
-          PROCESS_NAME: guardians
-          API_URL: https://api.thegraph.com/subgraphs/name/aragon/aragon-court-v2-mainnet
-          QUERY_DIR: queries
-          BQ_DATASET: subgraphs
-          BQ_TABLE: guardians
+          #PROCESS_NAME: guardians
+          #API_URL: https://api.thegraph.com/subgraphs/name/aragon/aragon-court-v2-mainnet
+          #QUERY_DIR: queries
+          #BQ_DATASET: subgraphs
+          #BQ_TABLE: guardians
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
