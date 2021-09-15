@@ -1,27 +1,10 @@
-import argparse
 import pandas as pd
 from pathlib import Path
 import os 
 from dotenv import load_dotenv
 from utils.the_graph import GraphQuery
+from utils.argparser import args
 
-
-# Create the parser
-parser = argparse.ArgumentParser()
-# Add argument to differenciate between local executions
-parser.add_argument('--local', dest='local', action='store_true')
-parser.add_argument('--no-local', dest='local', action='store_false')
-parser.set_defaults(local=True)
-
-# Add argument to point to testing tables
-parser.add_argument('--testing', dest='testing', action='store_true')
-parser.add_argument('--no-testing', dest='testing', action='store_false')
-parser.set_defaults(testing=True)
-
-# Add argument to define env_vars to use
-parser.add_argument('--env_vars', type=str, required=False, default=None) # relative path
-args = parser.parse_args()
-print("args: ", args)
 
 def main(testing_mode=True):
     from utils.bq import BQ_table # Import GCP after setting env_vars (credentials)
