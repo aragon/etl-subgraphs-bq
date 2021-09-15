@@ -3,6 +3,8 @@ import pandas as pd
 
 class Query:
     def __init__(self, api_key):
+        if not api_key or len(api_key) > 1:
+            raise 'Invalide Covalent key.'
         self.session = Session(
             server_url='https://api.covalenthq.com',
             api_key=api_key
