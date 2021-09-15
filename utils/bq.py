@@ -5,6 +5,8 @@ from google.cloud.exceptions import NotFound
 import pandas as pd
 from pathlib import Path
 import os
+import numpy as np
+from .utils import correct_env_var
 
 BQ_ETH_LOGS = "`bigquery-public-data.crypto_ethereum.logs`"
 
@@ -16,7 +18,8 @@ def reassing_key_env_var():
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = GOOGLE_APPLICATION_CREDENTIALS
 
 
-reassing_key_env_var()
+correct_env_var('GOOGLE_APPLICATION_CREDENTIALS')
+
 # Construct a BigQuery client object.
 client = bigquery.Client()
 project = client.project
@@ -46,19 +49,45 @@ class BQ_table:
 
     
     def _assign(self):
+        # Create dataset if it doesn't exist
+        client.create_dataset(self.dataset_name, timeout=30, exists_ok=True)
         table_ref = client.dataset(self.dataset_name).table(self.table_name)
         self.table = client.get_table(table_ref)  # API request
         self.exists = True
+        self.schema = {schema.name : schema.field_type for schema in self.table.schema}
 
+    def _change_dtypes(self, df):
+        '''
+        Allign df dtypes to the schema one.
+        Specially, transform bools to str when needed.
+        '''
+        schema_dict = self.schema
+        for col in df.columns:
+            dtype = SCHEMA_DTYPES.get(schema_dict.get(col))
+            if dtype:
+                df[col] = df[col].astype(dtype)
+
+        return df   
+    
+    
+    
     def uplaoad_df_to_bq(
         self,
         df : pd.DataFrame):
+
+        # Replace pd nulls with None (for inserting in BQ)
+        #df = df.where(pd.notnull(df), None) 
+        df = df.replace({np.nan: None})
+
+        df = self._change_dtypes(df)
+        if df.index.is_unique == False:
+            df = df.reset_index(drop=True)
         rows_list = [row_dict 
         for index, row_dict
         in df.to_dict(orient="index").items()]
 
-        return self.insert_rows(rows_list)
-    
+        return self.insert_rows(rows_list) 
+
     def download_table(self, limit=100, print_query=True):
         query = f"""
                 SELECT * 
@@ -137,12 +166,39 @@ class BQ_table:
         self._check_exists()
         
         return self.exists
-        
+
+    def select_all(self):
+        query = f"""
+            SELECT * 
+            FROM {self.table_id} 
+            """
+        return self._query_job(query)
+
+    def get_last_block(self, block_col, col_id, address):
+        last_block = None
+        query = f"""         
+            SELECT max({block_col}) max_block_height
+            FROM {self.table_id} 
+            WHERE {col_id} = '{address}'
+            """
+
+        df_response = self._query_job(query)
+        _last_block = df_response.iloc[0][0]
+        last_block = str(int(_last_block)) if not pd.isnull(_last_block) else None
+        return last_block
+
+    def _query_job(self, query):
+        query_job = client.query(query)  # Make an API request.
+        return query_job.result().to_dataframe()   
 
 
 
 ########## Utils
-
+SCHEMA_DTYPES = {
+    'STRING' : str,
+    #'FLOAT' : float,
+    #'INTEGER' : int,
+}
 
 
 def create_bq_schema(df : pd.DataFrame) -> dict:
