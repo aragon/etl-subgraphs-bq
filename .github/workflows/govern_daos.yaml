@@ -1,4 +1,4 @@
-name: court guardians
+name: govern daos
 on:
   workflow_dispatch:
   schedule:
@@ -20,6 +20,6 @@ jobs:
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
-        run: python main.py --testing --no-local --env_vars ./env_vars/court_guardians.env
+        run: python main.py --testing --no-local --env_vars ./env_vars/govern_daos.env
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
