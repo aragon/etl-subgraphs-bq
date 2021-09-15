@@ -56,14 +56,14 @@ def main(testing_mode=True):
         return f'Execution ended with {len(errs)} errors. Check Logging.'
     return f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}'
 
-if args.local:
-    # Set local env-vars
-    _ENV_VARS_PATH = './env_vars/court_guardians.env'
-    ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
-    print('ENV_VARS_PATH:', ENV_VARS_PATH)
-    load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')    
+_ENV_VARS_PATH = './env_vars/court_guardians.env'
+ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
+print('ENV_VARS_PATH:', ENV_VARS_PATH)
+load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
 
+if args.local:
+    # Set google creds
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')    
 
 print(main(testing_mode=args.testing))
 print('GOOGLE_APPLICATION_CREDENTIALS: ', os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
