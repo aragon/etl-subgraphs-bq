@@ -20,7 +20,7 @@ jobs:
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
-        run: python main.py --test True --local False --env_vars ./env_vars/court_guardians.env
+        run: python main.py --testing --no-local --local False --env_vars ./env_vars/court_guardians.env
         env:
           #PROCESS_NAME: guardians
           #API_URL: https://api.thegraph.com/subgraphs/name/aragon/aragon-court-v2-mainnet
