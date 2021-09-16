@@ -2,7 +2,7 @@ name: polygon client voting events
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "10 0 * * *" # delay 10 min. due to depending on polygon_client_daos had finished
 
 jobs:
   polygon_client_voting_events:
