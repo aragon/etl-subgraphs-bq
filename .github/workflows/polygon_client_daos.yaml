@@ -5,7 +5,7 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  court_guardians:
+  polygon_client_daos:
     runs-on: ubuntu-latest
     steps:
       - name: "checkout"
@@ -17,15 +17,12 @@ jobs:
         run: echo -n $GOOGLE_API_KEY | base64 -d >> ~/.google_api_key
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      - name: "add covalent key"
-        run: echo -n $COVALENT_API_KEY | base64 -d >> ~/.covalent_api_key
-        env:
-          COVALENT_API_KEY: ${{ secrets.COVALENT_API_KEY }}
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
         run: python main_covalent.py --no-testing --no-local --env_vars ./env_vars/polygon_client_daos.env
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
-          COVALENT_API_KEY: ~/.covalent_api_key
+          #COVALENT_API_KEY: ~/.covalent_api_key
+          COVALENT_API_KEY: ${{ secrets.COVALENT_API_KEY }}
           
