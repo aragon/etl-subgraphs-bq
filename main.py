@@ -40,8 +40,8 @@ def main(testing_mode=True):
     return f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}'
 
 #_ENV_VARS_PATH = './env_vars/court_guardians.env'
-_ENV_VARS_PATH = './env_vars/govern_daos.env'
-#_ENV_VARS_PATH = './env_vars/govern_executions.env'
+#_ENV_VARS_PATH = './env_vars/govern_daos.env'
+_ENV_VARS_PATH = './env_vars/govern_executions.env'
 
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
@@ -51,5 +51,5 @@ if args.local:
     # Set google creds
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')    
 
-print(main(testing_mode=False))
+print(main(testing_mode=args.testing))
 print('GOOGLE_APPLICATION_CREDENTIALS: ', os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
