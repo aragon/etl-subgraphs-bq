@@ -13,7 +13,7 @@ def main(testing_mode=True):
     QUERY_PATH = Path(os.getenv('QUERY_DIR')).joinpath(PROCESS_NAME+'.graphql')
     API_URL = os.getenv('API_URL')
     BQ_DATASET = os.getenv('BQ_DATASET')
-    BQ_TABLE = PROCESS_NAME
+    BQ_TABLE = os.getenv('BQ_TABLE')
     
     if testing_mode: BQ_TABLE = "test_" + BQ_TABLE
 
@@ -39,8 +39,10 @@ def main(testing_mode=True):
         return f'Execution ended with {len(errs)} errors. Check Logging.'
     return f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}'
 
-_ENV_VARS_PATH = './env_vars/court_guardians.env'
+#_ENV_VARS_PATH = './env_vars/court_guardians.env'
 _ENV_VARS_PATH = './env_vars/govern_daos.env'
+#_ENV_VARS_PATH = './env_vars/govern_executions.env'
+
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
 load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
@@ -49,5 +51,5 @@ if args.local:
     # Set google creds
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')    
 
-print(main(testing_mode=args.testing))
+print(main(testing_mode=False))
 print('GOOGLE_APPLICATION_CREDENTIALS: ', os.environ['GOOGLE_APPLICATION_CREDENTIALS'])

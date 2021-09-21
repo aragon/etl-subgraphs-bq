@@ -2,6 +2,7 @@ import json
 import requests
 from pathlib import Path
 import re
+from .utils import flatten, flatten_2
 class GraphQuery:
     QUERY_FIRST = '1000'
     QUERY_SKIP = 'null'
@@ -37,10 +38,15 @@ class GraphQuery:
         data = json.loads(r.text).get('data')
         data = data.get(self.q_name)
         if data: 
+            data = self._flatten(data)
             return data
         else:
             return f'{r.text}'
 
+    def _flatten(self, data):
+        data = [flatten(d) for d in data]
+        return data
+    
     def post(
         self, 
         paginate=False):

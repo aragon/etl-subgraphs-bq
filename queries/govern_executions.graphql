@@ -3,13 +3,37 @@
       first:$first, 
       skip:$skip)
   {
+
     id
     state
+    queue {
+      address
+      nonce
+    }
+    payload{
+      id
+      nonce
+      executionTime
+      title
+      submitter
+      actions{
+        id
+        to
+        value
+        data
+      }
+      executor{
+        address
+      }
+    }
     createdAt
+    config{
+      id
+      executionDelay
+    }
   }
- 
-  
 }
+
 # https://thegraph.com/legacy-explorer/subgraph/aragon/aragon-govern-mainnet
 # https://api.thegraph.com/subgraphs/name/aragon/aragon-govern-mainnet
 # https://github.com/aragon/govern
