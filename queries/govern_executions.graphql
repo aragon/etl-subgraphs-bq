@@ -1,7 +1,10 @@
 {
   containers(
       first:$first, 
-      skip:$skip)
+      skip:$skip,
+      orderBy: createdAt, 
+      orderDirection: desc
+      )
   {
 
     id
@@ -22,6 +25,8 @@
         value
         data
       }
+      allowFailuresMap
+      proof
       executor{
         address
       }
@@ -31,7 +36,46 @@
       id
       executionDelay
     }
-  }
+    history (orderBy: createdAt, 
+        			orderDirection: desc) {
+        id
+        createdAt
+        __typename
+        ... on ContainerEventChallenge {
+          id
+          disputeId
+          challenger
+          collateral {
+            id
+            token
+            amount
+          }
+          disputeId
+          reason
+          resolver
+        }
+        ... on ContainerEventSchedule {
+          id
+          collateral {
+            id
+            token
+            amount
+          }
+        }
+        ... on ContainerEventExecute {
+          id
+          execResults
+        }
+        ... on ContainerEventResolve {
+          id
+          approved
+        }
+        ... on ContainerEventVeto {
+          id
+          reason
+        }
+    	}
+  }   
 }
 
 # https://thegraph.com/legacy-explorer/subgraph/aragon/aragon-govern-mainnet
