@@ -11,8 +11,8 @@ from .utils import correct_env_var
 BQ_ETH_LOGS = "`bigquery-public-data.crypto_ethereum.logs`"
 
 def reassing_key_env_var():
-    GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-    if '~' in GOOGLE_APPLICATION_CREDENTIALS:
+    GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', False)
+    if GOOGLE_APPLICATION_CREDENTIALS and '~' in GOOGLE_APPLICATION_CREDENTIALS:
         # As it's relative path to home, reset env var
         GOOGLE_APPLICATION_CREDENTIALS = Path(GOOGLE_APPLICATION_CREDENTIALS).expanduser().as_posix()
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = GOOGLE_APPLICATION_CREDENTIALS
