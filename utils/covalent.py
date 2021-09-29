@@ -2,12 +2,13 @@ from .covalent_api import Session, ClassA
 import pandas as pd
 
 class Query:
-    def __init__(self, api_key):
+    def __init__(self, api_key,timeout=240):
         if not api_key or len(api_key) == 0:
             raise 'Invalide Covalent key.'
         self.session = Session(
             server_url='https://api.covalenthq.com',
-            api_key=api_key
+            api_key=api_key,
+            timeout=timeout
             )
 
     def _init_class_a(self):
