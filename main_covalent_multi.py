@@ -55,7 +55,7 @@ def main(testing_mode=True, check_last_block=True):
 
         df = r.get_df()
         if r.error_message:
-            covalent_errs.appendr.error_message
+            covalent_errs.append(r.error_message)
         df[TO_CHECK_COL_ID] = address
         df_events_list.append(df)
 
