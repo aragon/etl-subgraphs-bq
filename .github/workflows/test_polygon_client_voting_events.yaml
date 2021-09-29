@@ -1,10 +1,12 @@
-name: polygon client voting events
+## Testing workflow retries
+name: polygon client voting events - retries
 on:
   workflow_dispatch:
   schedule:
     - cron: "30 0 * * *" # delay 30 min. due to depending on polygon_client_daos had finished
 
 jobs:
+uses: nick-invision/retry@v2
   polygon_client_voting_events:
     runs-on: ubuntu-latest
     steps:
@@ -20,8 +22,12 @@ jobs:
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
-        run: python main_covalent_multi.py --no-testing --no-local --env_vars ./env_vars/polygon_client_voting_events.env --check_last_block
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
-          COVALENT_API_KEY: ${{ secrets.COVALENT_API_KEY }}
-          
+        uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 15
+          max_attempts: 3
+          retry_on: error
+          run: python main_covalent_multi.py --no-testing --no-local --env_vars ./env_vars/polygon_client_voting_events.env --check_last_block
+          env:
+            GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
+            COVALENT_API_KEY: ${{ secrets.COVALENT_API_KEY }}
