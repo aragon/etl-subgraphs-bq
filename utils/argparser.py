@@ -19,7 +19,7 @@ parser.add_argument('--env_vars', type=str, required=False, default=None) # rela
 # Add argument to determine if to check last block in target BQ table
 parser.add_argument('--check_last_block', dest='check_last_block', action='store_true')
 parser.add_argument('--no-check_last_block', dest='check_last_block', action='store_false')
-parser.set_defaults(check_last_block=True)
+parser.set_defaults(check_last_block=False)
 
 args = parser.parse_args()
 print("args: ", args)
