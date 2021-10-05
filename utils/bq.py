@@ -174,18 +174,28 @@ class BQ_table:
             """
         return self._query_job(query)
 
-    def get_last_block(self, block_col, col_id, address):
-        last_block = None
+    def get_last_block_by_address(self, block_col, col_id, address):
         query = f"""         
             SELECT max({block_col}) max_block_height
             FROM {self.table_id} 
             WHERE {col_id} = '{address}'
             """
-
         df_response = self._query_job(query)
-        _last_block = df_response.iloc[0][0]
+        return self._get_last_block(df_response)
+    
+    def get_last_block(self, block_col):
+        query = f"""         
+            SELECT max({block_col}) max_block_height
+            FROM {self.table_id} 
+            """
+        df_response = self._query_job(query)
+        return self._get_last_block(df_response)
+    
+    def _get_last_block(self, df):
+        _last_block = df.iloc[0][0]
         last_block = str(int(_last_block)) if not pd.isnull(_last_block) else None
         return last_block
+
 
     def _query_job(self, query):
         query_job = client.query(query)  # Make an API request.
