@@ -1,0 +1,57 @@
+{
+    disputes(first: $first,
+      skip: $skip,
+      orderBy: createdAt, 
+      orderDirection: desc) {
+      id
+      subject
+    	evidences{
+        id
+        data
+        submitter
+        createdAt
+      }
+    	createTermId
+    	possibleRulings
+    	finalRuling
+    	lastRoundId
+    	state
+    	settledPenalties
+    	metadata
+    	rawMetadata
+    	rounds {
+        id
+        state
+        number
+        draftTermId
+        delayedTerms
+        guardians {
+          guardian {
+            id
+          }
+          commitment
+          outcome
+        }
+        appeal {
+          id
+        }
+      }
+    txHash
+    createdAt
+    ruledAt
+    	guardians{
+        id
+      }
+    	txHash
+     createdAt
+    	finalRuling
+      lastRoundId
+      state
+      metadata
+      
+    }
+  }
+
+# https://thegraph.com/legacy-explorer/subgraph/aragon/aragon-court-v2-mainnet
+# https://api.thegraph.com/subgraphs/name/aragon/aragon-court-v2-mainnet
+# https://github.com/aragon/court-subgraph
