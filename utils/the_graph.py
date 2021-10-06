@@ -56,7 +56,7 @@ class GraphQuery:
         It is assumes only one entity per query.
 
         - first: max. response length
-        - skip: 
+        - skip: number of responses to skip
         '''
 
         if paginate:
