@@ -25,7 +25,9 @@ def main(testing_mode=True, check_last_block=True):
         api_key=COVALENT_API_KEY
     )
 
+    # Table used to query over each entity (mainly addresses)
     df_base = BQ_table(TO_CHECK_BQ_DATASET, TO_CHECK_BQ_TABLE).select_all()
+    # Actual state of destination table
     table = BQ_table(BQ_DATASET, BQ_TABLE)
 
     if table.exists and check_last_block:
@@ -35,6 +37,7 @@ def main(testing_mode=True, check_last_block=True):
     covalent_errs = []
     for _, row in df_base.iterrows():
         address = row[TO_CHECK_COL_ID]
+        # Initialize to first block in df_base
         starting_block = str(row[TO_CHECK_COL_STARTING_BLOCK])
 
         if table.exists and check_last_block:
@@ -42,6 +45,7 @@ def main(testing_mode=True, check_last_block=True):
             _starting_block = df_table[df_table[TO_CHECK_COL_ID]==address][TO_CHECK_COL_STARTING_BLOCK].max()
 
             if pd.notnull(_starting_block):
+                # Override to last+1 block for each address
                 starting_block = str(int(_starting_block) + 1) # Add 1 so as to not repeat last block
 
         ending_block = str(int(starting_block) + 10**6) # 1M is limit, pagintaion will be implemented later
@@ -87,7 +91,9 @@ def main(testing_mode=True, check_last_block=True):
 
 
 #_ENV_VARS_PATH = 'env_vars/polygon_client_daos_events.env'
-_ENV_VARS_PATH = 'env_vars/polygon_client_voting_events.env'
+#_ENV_VARS_PATH = 'env_vars/polygon_client_voting_events.env'
+#_ENV_VARS_PATH = 'env_vars/bsc_testnet_client_daos_events.env'
+_ENV_VARS_PATH = 'env_vars/bsc_testnet_client_voting_events.env'
     
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
