@@ -9,6 +9,7 @@ AVAILABLE_CHAIN_IDS = {
     'Polygon/Matic Mainnet': '137',
     'Polygon/Matic Mumbai Testnet': '80001',
     'Binance Smart Chain': '56',
+    'Binance Smart Chain Testnet': '97',
     'Avalanche C-Chain Mainnet': '43114',
     'Fuji C-Chain Testnet': '43113',
     'Fantom Opera Mainnet': '250'
