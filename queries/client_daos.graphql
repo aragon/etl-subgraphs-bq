@@ -1,0 +1,26 @@
+{
+  organizations(
+      first:$first, 
+      skip:$skip) {
+    address
+    createdAt
+    recoveryVault
+    apps
+    {
+      address
+      appId
+      repoName
+    }
+    factory
+    {
+      id
+      address
+    }
+  }
+}
+
+  
+
+# https://thegraph.com/hosted-service/subgraph/aragon/aragon-mainnet
+# https://api.thegraph.com/subgraphs/name/aragon/aragon-mainnet
+# https://github.com/aragon/connect/tree/master/packages/connect-thegraph
