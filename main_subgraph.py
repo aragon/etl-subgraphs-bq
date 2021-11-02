@@ -14,20 +14,34 @@ def main(testing_mode=True):
     API_URL = os.getenv('API_URL')
     BQ_DATASET = os.getenv('BQ_DATASET')
     BQ_TABLE = os.getenv('BQ_TABLE')
+    DATE_RANGE_ATTR = os.getenv('DATE_RANGE_ATTR')
+    DATE_RANGE_COL = os.getenv('DATE_RANGE_COL')
     
     if testing_mode: BQ_TABLE = "test_" + BQ_TABLE
 
+    table = BQ_table(BQ_DATASET, BQ_TABLE)
+
+    last_update:str = '0'
+    if table.exists:
+            last_update = table.get_last_block(DATE_RANGE_COL)
+            last_update = str(last_update) if pd.notnull(last_update) else '0'
+    
     query = GraphQuery(
         query_path=QUERY_PATH,
         api_url=API_URL,
-        query_first='1000'
+        query_first='1000',
+        gt_statement=DATE_RANGE_ATTR,
+        gt_value=str(int(last_update)+1)
     )
 
-    data = query.post(paginate=True)
+    data = query.post(
+        paginate=True,
+        date_filter=True)
 
     df = pd.DataFrame(data)
 
-    table = BQ_table(BQ_DATASET, BQ_TABLE)
+    if df.empty:
+        return f'No new rows to add to Table: {table.table_id}.'
 
     if not table.exists:
         table.create_table_from_df(
