@@ -40,12 +40,14 @@ class GraphQuery:
 
     def _parse_response(self, r):
         data = json.loads(r.text).get('data')
+        errors = json.loads(r.text).get('errors')
+        if errors:
+            raise ValueError(f'{r.text}')
+        
         data = data.get(self.q_name)
-        if data: 
-            data = self._flatten(data)
-            return data
-        else:
-            return f'{r.text}'
+        data = self._flatten(data)
+        return data
+
 
     def _flatten(self, data):
         data = [flatten(d) for d in data]
@@ -86,7 +88,10 @@ class GraphQuery:
         r_len = self.query_first
         _skip = self.query_skip
         # Continue until responses are smaller than max. available
-        while str(r_len) == self.query_first:
+        while (str(r_len) == self.query_first and 
+        # 5000 is max for skip value in The Graph
+        # Check if first iteration or less than limit
+        (_skip == self.QUERY_SKIP or int(_skip) <= 5000)):
             temp_q_text = (
                 self.query_txt
                 .replace('$first', self.query_first)

@@ -1,8 +1,15 @@
 {
   votes(
-      first:$first, 
-      skip:$skip) {
-    
+    first:$first, 
+    skip:$skip,
+    orderBy:startDate, 
+    orderDirection:asc,
+    where:{  
+      executed:true
+      startDate_gt:$startDate,
+      }
+    )
+    {
     id
     orgAddress
     appAddress
@@ -22,8 +29,6 @@
 
   }
 }
-
-  
 
 # https://thegraph.com/hosted-service/subgraph/aragon/aragon-voting-mainnet
 # https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-mainnet
