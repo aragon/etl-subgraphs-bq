@@ -1,7 +1,10 @@
 {
   organizations(
+      orderBy: createdAt, 
+      orderDirection: desc,
       first:$first, 
-      skip:$skip) {
+      skip:$skip,
+      where:{createdAt_gt:$createdAt_gt}) {
     address
     createdAt
     recoveryVault
@@ -24,3 +27,13 @@
 # https://thegraph.com/hosted-service/subgraph/aragon/aragon-mainnet
 # https://api.thegraph.com/subgraphs/name/aragon/aragon-mainnet
 # https://github.com/aragon/connect/tree/master/packages/connect-thegraph
+{
+  organizations(
+    orderBy: createdAt, 
+    orderDirection: desc,
+    where:{createdAt_gt:"1634533924"})
+  {
+    address
+    createdAt  
+  }
+}

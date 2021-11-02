@@ -1,0 +1,30 @@
+{
+  votes(
+      first:$first, 
+      skip:$skip) {
+    
+    id
+    orgAddress
+    appAddress
+    creator
+    originalCreator
+    metadata
+    executed
+    executedAt
+    startDate
+    snapshotBlock
+    supportRequiredPct
+    minAcceptQuorum
+    yea
+    nay
+    votingPower
+    voteNum
+
+  }
+}
+
+  
+
+# https://thegraph.com/hosted-service/subgraph/aragon/aragon-voting-mainnet
+# https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-mainnet
+# https://github.com/aragon/connect/tree/master/packages/connect-thegraph
