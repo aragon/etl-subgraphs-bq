@@ -10,6 +10,8 @@ class GraphQuery:
         self, 
         query_path:Path,
         api_url:str,
+        gt_statement:str,
+        gt_value:str='0',
         query_first:str=QUERY_FIRST,
         query_skip:str=QUERY_SKIP):
 
@@ -27,6 +29,8 @@ class GraphQuery:
 
         self.query_first = query_first
         self.query_skip = query_skip
+        self.gt_statement = gt_statement
+        self.gt_value = f'"{gt_value}"'
 
     def _post_request(self, query_txt):
         r = requests.post(
@@ -36,12 +40,14 @@ class GraphQuery:
 
     def _parse_response(self, r):
         data = json.loads(r.text).get('data')
+        errors = json.loads(r.text).get('errors')
+        if errors:
+            raise ValueError(f'{r.text}')
+        
         data = data.get(self.q_name)
-        if data: 
-            data = self._flatten(data)
-            return data
-        else:
-            return f'{r.text}'
+        data = self._flatten(data)
+        return data
+
 
     def _flatten(self, data):
         data = [flatten(d) for d in data]
@@ -49,7 +55,8 @@ class GraphQuery:
     
     def post(
         self, 
-        paginate=False):
+        paginate=False,
+        date_filter=False):
         '''
         If `paginate` = True, string text is expected to
         have $first and $skip params to be replaced accordingly.
@@ -57,8 +64,16 @@ class GraphQuery:
 
         - first: max. response length
         - skip: number of responses to skip
-        '''
 
+        If `date_filter` = True, string text is expected to
+        have a date filter statement such as `where:{createdAt_gt:$createdAt_gt})`.
+        In this case `gt_statement` being `$createdAt_gt`.
+        `gt_value` will depend on last table update, being `0` by default.
+        '''
+        if date_filter:
+            self.query_txt = self.query_txt.replace(
+                self.gt_statement, self.gt_value)
+        
         if paginate:
             return self._post_paginated()
 
@@ -73,7 +88,10 @@ class GraphQuery:
         r_len = self.query_first
         _skip = self.query_skip
         # Continue until responses are smaller than max. available
-        while str(r_len) == self.query_first:
+        while (str(r_len) == self.query_first and 
+        # 5000 is max for skip value in The Graph
+        # Check if first iteration or less than limit
+        (_skip == self.QUERY_SKIP or int(_skip) <= 5000)):
             temp_q_text = (
                 self.query_txt
                 .replace('$first', self.query_first)
@@ -81,7 +99,8 @@ class GraphQuery:
                 )
             r = self._post_request(temp_q_text)
             data = self._parse_response(r)
-            data_list.extend(data)
+            if isinstance(data, list): # to avoid str
+                data_list.extend(data)
             r_len = len(data)
             # Update params for pagination
             if _skip == self.query_skip:
