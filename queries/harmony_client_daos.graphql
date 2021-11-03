@@ -1,0 +1,29 @@
+{
+  organizations(
+      orderBy: createdAt, 
+      orderDirection: desc,
+      first:$first, 
+      skip:$skip,
+      where:{createdAt_gt:$createdAt_gt}) {
+    address
+    createdAt
+    recoveryVault
+    apps
+    {
+      address
+      appId
+      #repoName # Harmony doesn't have this attribute
+    }
+    factory
+    {
+      id
+      address
+    }
+  }
+}
+
+  
+
+# https://thegraph.com/hosted-service/subgraph/aragon/aragon-mainnet
+# https://api.thegraph.com/subgraphs/name/aragon/aragon-mainnet
+# https://github.com/aragon/connect/tree/master/packages/connect-thegraph
