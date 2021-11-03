@@ -1,11 +1,11 @@
-name: mainnet_client_daos
+name: harmony_client_daos
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
 jobs:
-  mainnet_client_daos:
+  harmony_client_daos:
     runs-on: ubuntu-latest
     steps:
       - name: "checkout"

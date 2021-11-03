@@ -10,7 +10,7 @@ class GraphQuery:
         self, 
         query_path:Path,
         api_url:str,
-        gt_statement:str,
+        gt_statement:str=None,
         gt_value:str='0',
         query_first:str=QUERY_FIRST,
         query_skip:str=QUERY_SKIP):
