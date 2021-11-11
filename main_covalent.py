@@ -85,10 +85,11 @@ load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
 if args.local:
     # Set creds
     os.environ['COVALENT_API_KEY'] = str(open(os.getenv('LOCAL_COVALENT_KEY_PATH')).read())
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')    
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')
+    args.check_last_block = True
+    
 
 print(main(
     testing_mode=args.testing,
-    #check_last_block=args.check_last_block
-    check_last_block=True
+    check_last_block=args.check_last_block
     ))
