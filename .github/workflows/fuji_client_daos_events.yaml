@@ -1,0 +1,27 @@
+name: fuji client daos events
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  fuji_client_daos_events:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checkout"
+        uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.5'
+      - name: "add google key"
+        run: echo -n $GOOGLE_API_KEY | base64 -d >> ~/.google_api_key
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      - name: "install dependencies"
+        run: pip install -r requirements.txt
+      - name: "run"
+        run: python main_covalent_multi.py --no-testing --no-local --env_vars ./env_vars/fuji_client_daos_events.env --check_last_block
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
+          COVALENT_API_KEY: ${{ secrets.COVALENT_API_KEY }}
+          
