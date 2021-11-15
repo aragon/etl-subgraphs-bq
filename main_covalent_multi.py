@@ -93,7 +93,9 @@ def main(testing_mode=True, check_last_block=True):
 #_ENV_VARS_PATH = 'env_vars/polygon_client_daos_events.env'
 #_ENV_VARS_PATH = 'env_vars/polygon_client_voting_events.env'
 #_ENV_VARS_PATH = 'env_vars/bsc_testnet_client_daos_events.env'
-_ENV_VARS_PATH = 'env_vars/bsc_testnet_client_voting_events.env'
+#_ENV_VARS_PATH = 'env_vars/bsc_testnet_client_voting_events.env'
+#_ENV_VARS_PATH = 'env_vars/fuji_client_daos_events.env'
+_ENV_VARS_PATH = 'env_vars/fuji_client_voting_events.env'
     
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
@@ -102,7 +104,8 @@ load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
 if args.local:
     # Set creds
     os.environ['COVALENT_API_KEY'] = str(open(os.getenv('LOCAL_COVALENT_KEY_PATH')).read())
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')    
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')
+    args.check_last_block = True
 
 print(main(
     testing_mode=args.testing,
