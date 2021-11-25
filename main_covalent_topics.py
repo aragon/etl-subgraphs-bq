@@ -74,23 +74,24 @@ def main(testing_mode=True, check_last_block=False):
     table = BQ_table(BQ_DATASET, BQ_TABLE)
     if df.empty:
         if check_last_block:
-            row_df_to_add = pd.DataFrame([{col: None for col in last_block_row}])
-            row_df_to_add[TO_CHECK_COL_STARTING_BLOCK] = ending_block
-            errs = table.uplaoad_df_to_bq(df)
+            row_df_to_add = pd.DataFrame([{TO_CHECK_COL_STARTING_BLOCK: ending_block}])
+            errs = table.uplaoad_df_to_bq(row_df_to_add)
             return f'Inserted empty row with ending_block: {ending_block}.'
         return f'No new rows to add to Table: {table.table_id}.'
-
-    if not table.exists:
-        table.create_table_from_df(
+    else:
+        if not table.exists:
+            table.create_table_from_df(
             df=df,
             partitioned_day=True
         )
 
-    errs = table.uplaoad_df_to_bq(df)
-    if errs:
-        return f'Execution ended with {len(errs)} errors. Check Logging. Table: {table.table_id}'
+        errs = table.uplaoad_df_to_bq(df)
+        output = ''
+        if errs:
+            output += f'Execution ended with {len(errs)} errors. Check Logging. Table: {table.table_id}/n'
 
-    return f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}'
+        output += f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}'
+        return output 
     
 
 #_ENV_VARS_PATH = './env_vars/mumbai_client_daos.env'
