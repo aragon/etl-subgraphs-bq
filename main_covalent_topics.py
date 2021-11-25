@@ -57,6 +57,8 @@ def main(testing_mode=True, check_last_block=False):
     )
 
     blockchain_last_block = q.get_last_block(chain_id=CHAIN_ID).data['items'][0]['height']
+    print(f'- blockchain_last_block: {blockchain_last_block}')
+
     ending_block = str(min(blockchain_last_block, int(starting_block) + 10**6)) # 1M is API limit
     
     r = q.get_log_events_by_topic_hash(
@@ -76,7 +78,7 @@ def main(testing_mode=True, check_last_block=False):
         if check_last_block:
             row_df_to_add = pd.DataFrame([{TO_CHECK_COL_STARTING_BLOCK: ending_block}])
             errs = table.uplaoad_df_to_bq(row_df_to_add)
-            return f'Inserted empty row with ending_block: {ending_block}.'
+            return f'Inserted empty row with ending_block: {ending_block} to {table.table_id}.'
         return f'No new rows to add to Table: {table.table_id}.'
     else:
         if not table.exists:
@@ -95,9 +97,16 @@ def main(testing_mode=True, check_last_block=False):
     
 
 #_ENV_VARS_PATH = './env_vars/mumbai_client_daos.env'
-_ENV_VARS_PATH = './env_vars/polygon_client_daos.env'
+#_ENV_VARS_PATH = './env_vars/polygon_client_daos.env'
+#_ENV_VARS_PATH = './env_vars/polygon_client_daos_events.env'
+#_ENV_VARS_PATH = './env_vars/polygon_client_voting_events.env'
 #_ENV_VARS_PATH = './env_vars/bsc_testnet_client_daos.env'
+#_ENV_VARS_PATH = './env_vars/bsc_testnet_client_daos_events.env'
+#_ENV_VARS_PATH = './env_vars/bsc_testnet_client_voting_events.env'
 #_ENV_VARS_PATH = './env_vars/fuji_client_daos.env'
+#_ENV_VARS_PATH = './env_vars/fuji_client_daos_events.env'
+_ENV_VARS_PATH = './env_vars/fuji_client_voting_events.env'
+
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
 load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
