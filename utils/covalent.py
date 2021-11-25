@@ -14,6 +14,39 @@ class Query:
     def _init_class_a(self):
         self.class_a = ClassA(self.session)
 
+    
+    def get_last_block(
+        self,
+        chain_id):
+        self._init_class_a()
+
+        r = self.class_a.get_a_block(
+            chain_id=chain_id,
+            block_height='latest'
+            )
+
+        return Response(r)
+        
+    
+    def get_log_events_by_topic_hash(
+        self,
+        chain_id,
+        topic,
+        starting_block,
+        page_size=10**4,
+        ending_block='latest'):
+        self._init_class_a()
+
+        r = self.class_a.get_log_events_by_topic_hash(
+            chain_id=chain_id,
+            topic=topic,
+            starting_block=starting_block,
+            ending_block=ending_block,
+            page_size=page_size
+            )
+
+        return Response(r)
+    
     def get_log_events_by_contract_address(
         self,
         chain_id,
