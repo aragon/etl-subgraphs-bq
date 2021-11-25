@@ -20,7 +20,7 @@ jobs:
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
-        run: python main_covalent_multi.py --no-testing --no-local --env_vars ./env_vars/fuji_client_voting_events.env --check_last_block
+        run: python main_covalent_topics.py --no-testing --no-local --env_vars ./env_vars/fuji_client_voting_events.env --check_last_block
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
           COVALENT_API_KEY: ${{ secrets.COVALENT_API_KEY }}

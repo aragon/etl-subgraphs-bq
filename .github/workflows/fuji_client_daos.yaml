@@ -20,7 +20,7 @@ jobs:
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
-        run: python main_covalent.py --no-testing --no-local --check_last_block --env_vars ./env_vars/fuji_client_daos.env
+        run: python main_covalent_topics.py --no-testing --no-local --check_last_block --env_vars ./env_vars/fuji_client_daos.env
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
           #COVALENT_API_KEY: ~/.covalent_api_key

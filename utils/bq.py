@@ -182,6 +182,16 @@ class BQ_table:
             """
         df_response = self._query_job(query)
         return self._get_last_block(df_response)
+
+    def get_last_row_by_block(self, block_col):
+        query = f"""         
+            SELECT *
+            FROM {self.table_id} 
+            ORDER BY {block_col} DESC
+            LIMIT 1
+            """
+        df_response = self._query_job(query)
+        return df_response
     
     def get_last_block(self, block_col):
         query = f"""         
