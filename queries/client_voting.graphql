@@ -5,11 +5,11 @@
     orderBy:startDate, 
     orderDirection:asc,
     where:{  
-      executed:true
-      startDate_gt:$startDate,
+      executed:true,
+      executedAt_gt:$executedAt,
       }
     )
-    {
+    { 
     id
     orgAddress
     appAddress
