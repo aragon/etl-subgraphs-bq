@@ -23,3 +23,4 @@ jobs:
         run: python main_covalent_topics.py --no-testing --no-local --env_vars ./env_vars/mainnet_client_voting.env
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
+          COVALENT_API_KEY: ${{ secrets.COVALENT_API_KEY }}
