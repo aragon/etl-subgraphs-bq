@@ -30,7 +30,7 @@ class GraphQuery:
         self.query_first = query_first
         self.query_skip = query_skip
         self.gt_statement = gt_statement
-        self.gt_value = f'"{gt_value}"'
+        self.gt_value = gt_value
 
     def _post_request(self, query_txt):
         r = requests.post(
@@ -72,7 +72,7 @@ class GraphQuery:
         '''
         if date_filter:
             self.query_txt = self.query_txt.replace(
-                self.gt_statement, self.gt_value)
+                self.gt_statement, str(self.gt_value))
         
         if paginate:
             return self._post_paginated()
@@ -91,7 +91,7 @@ class GraphQuery:
         while (str(r_len) == self.query_first and 
         # 5000 is max for skip value in The Graph
         # Check if first iteration or less than limit
-        (_skip == self.QUERY_SKIP or int(_skip) <= 5000)):
+        (_skip == self.QUERY_SKIP or int(_skip) <= 1000)):
             temp_q_text = (
                 self.query_txt
                 .replace('$first', self.query_first)

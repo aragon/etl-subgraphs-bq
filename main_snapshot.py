@@ -4,20 +4,24 @@ import os
 from dotenv import load_dotenv
 from utils.the_graph import GraphQuery
 from utils.argparser import args
+import re
 
 
 def main(testing_mode=True):
     from utils.bq import BQ_table # Import GCP after setting env_vars (credentials)
 
     SPACES_QUERY_PATH = Path(os.getenv('SPACES_QUERY_PATH'))
+    PROPOSALS_QUERY_PATH = Path(os.getenv('PROPOSALS_QUERY_PATH'))
     API_URL = os.getenv('API_URL')
     BQ_DATASET = os.getenv('BQ_DATASET')
     SPACES_BQ_TABLE = os.getenv('SPACES_BQ_TABLE')
-    #DATE_RANGE_ATTR = os.getenv('DATE_RANGE_ATTR')
-    #DATE_RANGE_COL = os.getenv('DATE_RANGE_COL')
+    PROPOSALS_BQ_TABLE = os.getenv('PROPOSALS_BQ_TABLE')
+    PROPOSALS_DATE_RANGE_ATTR = os.getenv('PROPOSALS_DATE_RANGE_ATTR')
+    PROPOSALS_DATE_RANGE_COL = os.getenv('PROPOSALS_DATE_RANGE_COL')
     
     if testing_mode: SPACES_BQ_TABLE = "test_" + SPACES_BQ_TABLE
 
+    # Load Spaces
     spaces_table = BQ_table(BQ_DATASET, SPACES_BQ_TABLE)
 
     last_update:str = '0'
@@ -49,11 +53,59 @@ def main(testing_mode=True):
             df=df_spaces_new,
             partitioned_day=True)
 
-    errs = spaces_table.uplaoad_df_to_bq(df_spaces_new)
-    if errs:
-        print(f'Spaces: Execution ended with {len(errs)} errors. Check Logging.')
-    
-    print(f"""Space: Table: {spaces_table.table_id}. Shape: {df_spaces_new.shape}""")
+    if not df_spaces_new.empty:
+        errs = spaces_table.uplaoad_df_to_bq(df_spaces_new)
+        if errs:
+            print(f'Spaces: Execution ended with {len(errs)} errors. Check Logging.')
+        print(f"""Space: Table: {spaces_table.table_id}. Shape: {df_spaces_new.shape}""")
+
+
+    # Load Proposals
+    print("Proposals: quering started.")
+    proposals_table = BQ_table(BQ_DATASET, PROPOSALS_BQ_TABLE)
+
+    last_update = 0
+    df_proposals_base = pd.DataFrame()
+    if proposals_table.exists:
+            last_update_tmp = proposals_table.get_last_block(PROPOSALS_DATE_RANGE_COL)
+            last_update = last_update_tmp if last_update_tmp != None else last_update
+
+    query = GraphQuery(
+        query_path=PROPOSALS_QUERY_PATH,
+        api_url=API_URL,
+        query_first='1000',
+        query_skip='0',
+        gt_statement=PROPOSALS_DATE_RANGE_ATTR,
+        gt_value=int(last_update)+1
+        )
+
+    print("proposals: quering started.")
+    data = query.post(
+        paginate=True,
+        date_filter=True)
+
+    df_proposals_new = pd.DataFrame(data)
+    lambda_replace = lambda x: x.replace('\n',"").replace('*',"")
+
+    if not df_proposals_base.empty:
+        df_proposals_new['body'] = (df_proposals_new['body']
+                                    .apply(lambda_replace))
+
+    print(f"proposals: new fields to add {df_proposals_new.shape[0]}")
+
+    if not proposals_table.exists:
+        proposals_table.create_table_from_df(
+            df=df_proposals_new,
+            partitioned_day=True)
+
+    if not df_proposals_new.empty:
+        errs = proposals_table.uplaoad_df_to_bq(df_proposals_new)
+        if errs:
+            print(f'Proposals: Execution ended with {len(errs)} errors. Check Logging.')
+        print(f"""Proposals: Table: {proposals_table.table_id}. Shape: {df_proposals_new.shape}""")
+
+
+
 
 
 _ENV_VARS_PATH = './env_vars/snapshot.env'
