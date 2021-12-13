@@ -69,6 +69,7 @@ def main(testing_mode=True):
     if proposals_table.exists:
             last_update_tmp = proposals_table.get_last_block(PROPOSALS_DATE_RANGE_COL)
             last_update = last_update_tmp if last_update_tmp != None else last_update
+            print(f"Proposals: last update:{last_update}")
 
     query = GraphQuery(
         query_path=PROPOSALS_QUERY_PATH,
@@ -79,19 +80,18 @@ def main(testing_mode=True):
         gt_value=int(last_update)+1
         )
 
-    print("proposals: quering started.")
     data = query.post(
         paginate=True,
         date_filter=True)
 
     df_proposals_new = pd.DataFrame(data)
-    lambda_replace = lambda x: x.replace('\n',"").replace('*',"")
+    lambda_replace = lambda x: x.replace('\n',"").replace('**',"")
 
-    if not df_proposals_base.empty:
+    if not df_proposals_new.empty:
         df_proposals_new['body'] = (df_proposals_new['body']
                                     .apply(lambda_replace))
 
-    print(f"proposals: new fields to add {df_proposals_new.shape[0]}")
+    print(f"Proposals: new fields to add {df_proposals_new.shape[0]}")
 
     if not proposals_table.exists:
         proposals_table.create_table_from_df(
@@ -105,7 +105,9 @@ def main(testing_mode=True):
         print(f"""Proposals: Table: {proposals_table.table_id}. Shape: {df_proposals_new.shape}""")
 
 
-
+    
+    
+    return 'Finished exectution!'
 
 
 _ENV_VARS_PATH = './env_vars/snapshot.env'
@@ -120,4 +122,3 @@ if args.local:
     args.testing = False
 
 print(main(testing_mode=args.testing))
-print('GOOGLE_APPLICATION_CREDENTIALS: ', os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
