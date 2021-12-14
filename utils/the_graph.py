@@ -91,7 +91,7 @@ class GraphQuery:
         while (str(r_len) == self.query_first and 
         # 5000 is max for skip value in The Graph
         # Check if first iteration or less than limit
-        (_skip == self.QUERY_SKIP or int(_skip) <= 15000)):
+        (_skip == self.QUERY_SKIP or int(_skip) <= 5000)):
             temp_q_text = (
                 self.query_txt
                 .replace('$first', self.query_first)
