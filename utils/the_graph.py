@@ -30,7 +30,7 @@ class GraphQuery:
         self.query_first = query_first
         self.query_skip = query_skip
         self.gt_statement = gt_statement
-        self.gt_value = f'"{gt_value}"'
+        self.gt_value = gt_value
 
     def _post_request(self, query_txt):
         r = requests.post(
@@ -72,7 +72,7 @@ class GraphQuery:
         '''
         if date_filter:
             self.query_txt = self.query_txt.replace(
-                self.gt_statement, self.gt_value)
+                self.gt_statement, str(self.gt_value))
         
         if paginate:
             return self._post_paginated()

@@ -1,0 +1,29 @@
+{
+spaces(
+        first: $first,
+        skip: $skip,
+    ) 
+    {    
+    id
+    name
+    symbol
+    skin
+    github
+    twitter
+    website
+    location
+    network
+    domain
+    about
+    voting{
+      delay
+      period
+      type
+      quorum
+      blind
+      hideAbstain
+    }
+    }
+}
+
+# https://docs.snapshot.org/graphql-api
