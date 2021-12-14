@@ -1,0 +1,31 @@
+{
+votes(
+        first: $first,
+        skip: $skip,
+        where: {
+          created_gt: $created_gt
+          }
+        orderBy: "created",
+        orderDirection: asc
+
+    ) 
+    {    
+   	id
+    ipfs
+    voter
+    created
+    space{
+      id
+      name
+    }
+    proposal{
+      id
+    }
+    vp
+    vp_by_strategy
+    vp_state
+    }
+    }
+
+# https://docs.snapshot.org/graphql-api
+
