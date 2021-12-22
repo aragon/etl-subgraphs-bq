@@ -1,11 +1,11 @@
-name: fuji client voting events
+name: snapshot
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: "30 0 * * *" # delay 30 min. due to depending on fuji_client_daos had finished
+  schedule:
+    - cron: "0 */4 * * *"
 
 jobs:
-  fuji_client_voting_events:
+  snapshot:
     runs-on: ubuntu-latest
     steps:
       - name: "checkout"
@@ -20,8 +20,6 @@ jobs:
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
-        run: python main_covalent_topics.py --no-testing --no-local --env_vars ./env_vars/fuji_client_voting_events.env --check_last_block
+        run: python main_snapshot.py --no-testing --no-local --env_vars ./env_vars/snapshot.env
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
-          COVALENT_API_KEY: ${{ secrets.COVALENT_API_KEY }}
-          

@@ -1,0 +1,42 @@
+{
+proposals(
+        first: $first,
+        skip: $skip,
+        where: {
+          state: "closed"
+          created_gt: $created_gt
+          }
+        orderBy: "created",
+        orderDirection: asc
+
+    ) 
+    {    
+   id
+    ipfs
+    author
+    created
+    space{
+      id
+      name
+    }
+    network
+    type
+    title
+    body
+    choices
+    start
+    end
+    snapshot
+    state
+    link
+    scores
+    scores_by_strategy
+    scores_state
+    scores_total
+    scores_updated
+    votes
+    }
+    }
+
+# https://docs.snapshot.org/graphql-api
+
