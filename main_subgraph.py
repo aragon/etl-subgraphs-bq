@@ -60,7 +60,9 @@ def main(testing_mode=True):
 #_ENV_VARS_PATH = './env_vars/mainnet_client_daos.env'
 #_ENV_VARS_PATH = './env_vars/mainnet_client_voting.env'
 #_ENV_VARS_PATH = './env_vars/harmony_client_daos.env'
-_ENV_VARS_PATH = './env_vars/harmony_client_voting.env'
+#_ENV_VARS_PATH = './env_vars/harmony_client_voting.env'
+#_ENV_VARS_PATH = './env_vars/mainnet_client_daos_names.env'
+_ENV_VARS_PATH = './env_vars/polygon_client_daos_names.env'
 
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
