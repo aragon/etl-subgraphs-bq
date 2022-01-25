@@ -1,0 +1,24 @@
+{
+  transactions(
+      orderBy: createdAt, 
+      orderDirection: asc,
+      first:$first, 
+      skip:$skip,
+      where:{createdAt_gt:$createdAt_gt}){
+    id
+    vault {
+      id
+    }
+    from
+    to
+    token{
+      id
+      name
+      symbol
+      decimals
+    }
+    amount
+    type
+    createdAt
+  }
+}
