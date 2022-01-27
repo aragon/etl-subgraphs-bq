@@ -2,11 +2,11 @@
   votes(
     first:$first, 
     skip:$skip,
-    orderBy:startDate, 
+    orderBy:executedAt, 
     orderDirection:asc,
     where:{  
       executed:true,
-      executedAt_gt:$executedAt,
+      executedAt_gt:$executedAt_gt,
       }
     )
     { 
