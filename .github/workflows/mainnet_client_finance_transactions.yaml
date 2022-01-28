@@ -1,11 +1,11 @@
-name: mainnet_client_voting
+name: mainnet_client_finance_transactions
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
 jobs:
-  mainnet_client_voting:
+  mainnet_client_finance_transactions:
     runs-on: ubuntu-latest
     steps:
       - name: "checkout"
@@ -20,6 +20,6 @@ jobs:
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
-        run: python main_subgraph.py --no-testing --no-local --env_vars ./env_vars/mainnet_client_voting.env
+        run: python main_subgraph.py --no-testing --no-local  --env_vars ./env_vars/mainnet_client_finance_transactions.env
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
