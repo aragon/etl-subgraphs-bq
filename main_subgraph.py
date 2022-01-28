@@ -64,6 +64,7 @@ def main(testing_mode=True):
 #_ENV_VARS_PATH = './env_vars/mainnet_client_daos_names.env'
 #_ENV_VARS_PATH = './env_vars/polygon_client_daos_names.env'
 _ENV_VARS_PATH = './env_vars/mainnet_client_finance_transactions.env'
+_ENV_VARS_PATH = './env_vars/mainnet_client_voting.env'
 
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
@@ -74,5 +75,5 @@ if args.local:
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')    
     args.testing = False
 
-print(main(testing_mode=args.testing))
+print(main(testing_mode=False))
 print('GOOGLE_APPLICATION_CREDENTIALS: ', os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
