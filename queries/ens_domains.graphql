@@ -1,0 +1,30 @@
+{
+  domains(
+    orderBy: createdAt, 
+    orderDirection: asc,
+    first:$first, 
+    skip:$skip,
+    where:{
+      createdAt_gt:$createdAt_gt,  
+      name_contains:"aragon"}){
+    id
+    name
+    labelName
+    labelhash
+    isMigrated
+    ttl
+    createdAt
+    owner{
+      id
+    }
+    resolver{
+      id
+    }
+  } 
+}
+
+
+  
+
+# https://thegraph.com/hosted-service/subgraph/yuetloo/aragon-dao-mainnet
+# https://thegraph.com/hosted-service/subgraph/yuetloo/aragon-dao-polygon
