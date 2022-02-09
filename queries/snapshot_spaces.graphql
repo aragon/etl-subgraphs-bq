@@ -1,33 +1,20 @@
 {
-spaces(
+  spaces(
         first: $first,
         skip: $skip,
     ) 
     {    
     id
     name
-    about
-    avatar
-    terms
     symbol
     skin
     github
-    email
     twitter
     website
     location
     network
     domain
     about
-    plugins
-    voting{
-      delay
-      period
-      type
-      quorum
-      blind
-      hideAbstain
-    }
     voting{
       delay
       period
@@ -40,12 +27,8 @@ spaces(
     name
     params
     }
-    validation{
-      name
-      params
+    plugins
     }
-    }
-  
 }
 
 # https://docs.snapshot.org/graphql-api
