@@ -6,15 +6,20 @@ spaces(
     {    
     id
     name
+    about
+    avatar
+    terms
     symbol
     skin
     github
+    email
     twitter
     website
     location
     network
     domain
     about
+    plugins
     voting{
       delay
       period
@@ -23,7 +28,24 @@ spaces(
       blind
       hideAbstain
     }
+    voting{
+      delay
+      period
+      type
+      quorum
+      blind
+      hideAbstain
     }
+    strategies{
+    name
+    params
+    }
+    validation{
+      name
+      params
+    }
+    }
+  
 }
 
 # https://docs.snapshot.org/graphql-api
