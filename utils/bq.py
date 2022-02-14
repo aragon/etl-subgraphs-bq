@@ -142,6 +142,8 @@ class BQ_table:
         self, 
         df, 
         partitioned_day=False):
+
+        df = self._avoid_duplicates(df)
         self._create_schema_from_df(df)
         table = bigquery.Table(
             self.table_id, 
@@ -159,6 +161,21 @@ class BQ_table:
         table = client.create_table(table) # API request
 
 
+    def _avoid_duplicates(self, df):
+        # Workaround to avoid issues while uploading schema to BigQuery
+        cols_new = []
+        _tracker_dict = {}
+        for col in df.columns:
+            _col_lower = col.lower()
+            if _col_lower in _tracker_dict: # If will have issues
+                col = col + '_' + str(_tracker)
+            cols_new.append(col)
+            _tracker = _tracker_dict.get(_col_lower, 0) + 1
+            _tracker_dict[_col_lower] = _tracker
+        df.columns = cols_new
+        return df
+
+    
     def delete_table(self):
         client.delete_table(
             self.table_id, 
