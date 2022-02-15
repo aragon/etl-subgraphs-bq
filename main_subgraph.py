@@ -26,6 +26,8 @@ def main(testing_mode=True):
             last_update = table.get_last_block(DATE_RANGE_COL)
             last_update = str(last_update) if pd.notnull(last_update) else '0'
     
+    print("last update: ", last_update)
+    
     query = GraphQuery(
         query_path=QUERY_PATH,
         api_url=API_URL,
@@ -60,12 +62,12 @@ def main(testing_mode=True):
 #_ENV_VARS_PATH = './env_vars/mainnet_client_daos.env'
 #_ENV_VARS_PATH = './env_vars/mainnet_client_voting.env'
 #_ENV_VARS_PATH = './env_vars/harmony_client_daos.env'
-#_ENV_VARS_PATH = './env_vars/harmony_client_voting.env'
+_ENV_VARS_PATH = './env_vars/harmony_client_voting.env'
 #_ENV_VARS_PATH = './env_vars/mainnet_client_daos_names.env'
 #_ENV_VARS_PATH = './env_vars/polygon_client_daos_names.env'
 #_ENV_VARS_PATH = './env_vars/mainnet_client_finance_transactions.env'
 #_ENV_VARS_PATH = './env_vars/mainnet_client_voting.env'
-_ENV_VARS_PATH = './env_vars/ens_domains.env'
+#_ENV_VARS_PATH = './env_vars/ens_domains.env'
 
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
