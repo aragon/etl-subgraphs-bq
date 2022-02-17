@@ -7,52 +7,42 @@ https://snapshot.org/#/strategies
 '''
 import pandas as pd
 import ast
-from .etherscan import Ether
+from etherscan import Etherscan
 import os
 
 STRATEGIES = "['erc20-balance-of', 'erc721']"
 #STRATEGIES = ast.literal_eval(os.getenv('STRATEGIES'))
-e = Ether(os.getenv('ETHERSCAN_API_KEY'))
+e = Etherscan("S85IISU9D7QUDP9HRHF7I5VKS6VTC9595Q")
 
-class Spaces:
+class Spaces():
     def __init__(
         self,
         df : pd.DataFrame):
 
         self.df = df
 
-    def _get_spaces_strategies(self):
-        fields = []
-        self.df.strategies = self.df.strategies.apply(
-            lambda x: ast.literal_eval(x))
+    def get_vp(self):
+        self.df["total_voting_power"] = df["strategies"].apply(
+            lambda x: Strategies(x).get_total_vp()
+        )
+        return self.df
 
-        for y in self.df.strategies:
-            _fields = []
-            for x in y:
-                name = x.get("name", "")
-                params = x.get("params", {})
-                for k, v in params.items():
-                    field = {"_".join([name, k]) : v}
-                    _fields.append(field)
-            fields.append(_fields)
-
-
-class Strategies:
+class Strategies(list):
     def __init__(
         self,
-        strategies : list):
-        self.strategies = strategies
+        strategies : str):
+        self.strategies = ast.literal_eval(strategies)
 
     def get_total_vp(self):
         total_vp = 0
-        for index, s in enumerate(self.strategies:)
+        for index, s in enumerate(self.strategies):
             s = Strategy(s, index)
             vp = s.get_vp()
             total_vp += vp
 
         return total_vp
     
-class Strategy:
+class Strategy(dict):
     def __init__(
         self,
         strategy:dict,
@@ -69,13 +59,20 @@ class Strategy:
             address = self.params.get("address")
             decimals = self.params.get("decimals")
             symbol = self.params.get("symbol")
-            vp += e.get_total_supply_by_contract_address(
-                contract_address=address
-            )
-        pass
+            if address:
+                _vp = e.get_total_supply_by_contract_address(
+                contract_address=address)
+                if _vp:
+                    vp += vp
+        return vp
     
-
+os.environ['LOCAL_ETHERSCAN_API_KEY'] = '.key/etherscan'
+os.environ['ETHERSCAN_API_KEY'] = str(open(
+    os.getenv('LOCAL_ETHERSCAN_API_KEY')).read())
 
 df = pd.read_csv("df_spaces_new.csv")
+df = df.head(30)
+df["total_voting_power"] = df["strategies"].apply(
+    lambda x: Strategies(x).get_total_vp())
 
-df = Spaces(df)._get_spaces_strategies()
+print(df["total_voting_power"])
