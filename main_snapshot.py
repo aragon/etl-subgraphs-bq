@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from utils.the_graph import GraphQuery
 from utils.argparser import args
+from utils.snapshot import Spaces
 import re
 
 
@@ -50,6 +51,9 @@ def main(testing_mode=True):
     
     if not df_spaces_base.empty:
         df_spaces_new = df_spaces_new[~df_spaces_new['id'].isin(ids)]
+
+    #### Parse unique space total voting power (temporal, then will be calculated per proposal using block height)
+    df_spaces_new = Spaces(df_spaces_new)
 
     print(f"Spaces: new fields to add {df_spaces_new.shape[0]}")
 
