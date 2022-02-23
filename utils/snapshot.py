@@ -22,16 +22,21 @@ class Spaces():
         self.df = df
 
     def get_vp(self):
-        self.df["total_voting_power"] = df["strategies"].apply(
-            lambda x: Strategies(x).get_total_vp()
+        self.df["total_voting_power"] = df.apply(
+            lambda x: Strategies(
+                x["strategies"],
+                x["network"]).get_total_vp(),
+            axis=1
         )
         return self.df
 
 class Strategies(list):
     def __init__(
         self,
-        strategies : str):
+        strategies : str,
+        network : str):
         self.strategies = ast.literal_eval(strategies)
+        self.network = network
 
     def get_total_vp(self):
         total_vp = 0
@@ -50,8 +55,8 @@ class Strategy(dict):
 
         self.strategy = strategy
         self.index = index
-        self.name = self.get("name", "")
-        self.params = self.get("params", {})
+        self.name = self.strategy.get("name", "")
+        self.params = self.strategy.get("params", {})   
 
     def get_vp(self):
         vp = 0
@@ -71,8 +76,12 @@ os.environ['ETHERSCAN_API_KEY'] = str(open(
     os.getenv('LOCAL_ETHERSCAN_API_KEY')).read())
 
 df = pd.read_csv("df_spaces_new.csv")
-df = df.head(30)
-df["total_voting_power"] = df["strategies"].apply(
-    lambda x: Strategies(x).get_total_vp())
+df = df.head(15)
+df["total_voting_power"] = df.apply(
+            lambda x: Strategies(
+                x["strategies"],
+                x["network"]).get_total_vp(),
+            axis=1
+        )
 
 print(df["total_voting_power"])
