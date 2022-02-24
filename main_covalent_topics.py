@@ -106,7 +106,8 @@ def main(testing_mode=True, check_last_block=False):
 #_ENV_VARS_PATH = './env_vars/fuji_client_daos.env'
 #_ENV_VARS_PATH = './env_vars/fuji_client_daos_events.env'
 #_ENV_VARS_PATH = './env_vars/fuji_client_voting_events.env'
-_ENV_VARS_PATH = './env_vars/mainnet_client_voting.env'
+#_ENV_VARS_PATH = './env_vars/mainnet_client_voting.env'
+_ENV_VARS_PATH = './env_vars/syndicate_mainnet_daos.env'
 
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 
