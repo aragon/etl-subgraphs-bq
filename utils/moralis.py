@@ -16,7 +16,7 @@ As of 23/02/2022:
 - ~11k were stable or ETH
 
 18,442 (block time) + 18,442 * 3 = 73,768 max requests (50 min)
-8k * 4 = 32,000 (3 min)
+8k * 4 = 32,000 (21 min)
 '''
 import collections
 from argparse import ONE_OR_MORE
@@ -32,10 +32,7 @@ METHODS_ENUM = {
 
 
 class Moralis:
-    ONE_MINUTE = 60
-    MAX_UNIT_REQUEST = 3
-    MAX_CALLS_PER_MINUTE = (1500 - MAX_UNIT_REQUEST)
-    def __init__(self, api_key):
+    def __init__(self, api_key, cache=False):
         self.api_key = api_key
         self.api_url = os.getenv('MORALIS_API_URL') 
         self.headers = {
@@ -43,7 +40,11 @@ class Moralis:
             "X-API-Key": self.api_key
             }
     
+    def _check_limits():
+        pass
+
     def query(self, method, **kwargs):
+        self._check_limits()
         # Set Ethereum as default - https://docs.moralis.io/moralis-server/web3-sdk/intro#supported-chains
         chain = kwargs.get('chain', 'eth') 
         if method == METHODS_ENUM.get(1):
@@ -58,8 +59,8 @@ class Moralis:
                 url += f"&to_block={block}"
         
         r = requests.get(url, headers=self.headers)
-
-        return Response(r, method).parse()
+        r_parsed = Response(r, method).parse()
+        return r_parsed
 
 
 class Response:

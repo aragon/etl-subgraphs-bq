@@ -4,6 +4,8 @@ import os
 from dotenv import load_dotenv
 from utils.the_graph import GraphQuery
 from utils.argparser import args
+from utils.finance_transactions import get_transactions_data
+from utils.timer import RateLimited
 import re
 
 
@@ -12,28 +14,40 @@ def main(testing_mode=True):
 
     API_URL = os.getenv('API_URL')
     BQ_DATASET = os.getenv('BQ_DATASET')
-    
-    if testing_mode: SPACES_BQ_TABLE = "test_" + SPACES_BQ_TABLE
+    BQ_TABLE_ORIG = os.getenv('BQ_TABLE_ORIG')
+    BQ_TABLE_OUT = os.getenv('BQ_TABLE_OUT')
+    DATE_RANGE_COL = os.getenv('DATE_RANGE_COL')
 
-    # Load Spaces
-    spaces_table = BQ_table(BQ_DATASET, SPACES_BQ_TABLE)
+    
+    if testing_mode: BQ_TABLE_OUT = "test_" + BQ_TABLE_OUT
+
+    table_orig = BQ_table(BQ_DATASET, BQ_TABLE_ORIG)
+    table_out = BQ_table(BQ_DATASET, BQ_TABLE_OUT)
 
     last_update:str = '0'
-    df_spaces_base = pd.DataFrame()
-    if spaces_table.exists:
-            df_spaces_base = spaces_table.select_all()
-            ids = set(df_spaces_base['id'])
+    if table_out.exists:
+            last_update = table_out.get_last_block(DATE_RANGE_COL)
+            last_update = str(last_update) if pd.notnull(last_update) else '0'
+    ## Get base df
+    df_spaces_base = table_orig.select_all_gt_block(DATE_RANGE_COL, last_update)
     
-    if not spaces_table.exists:
-        spaces_table.create_table_from_df(
-            df=df_spaces_new,
+    ### QUERY createdAt+1
+    df = get_transactions_data(df_spaces_base)
+
+    if df.empty:
+        return f'No new rows to add to Table: {table_out.table_id}.'
+
+    if not table_out.exists:
+        table_out.create_table_from_df(
+            df=df,
             partitioned_day=True)
 
-    if not df_spaces_new.empty:
-        errs = spaces_table.uplaoad_df_to_bq(df_spaces_new)
-        if errs:
-            print(f'Spaces: Execution ended with {len(errs)} errors. Check Logging.')
-        print(f"""Space: Table: {spaces_table.table_id}. Shape: {df_spaces_new.shape}""")
+    errs = table_out.uplaoad_df_to_bq(df)
+    if errs:
+        return f'Execution ended with {len(errs)} errors. Check Logging.'
+    return f'Execution succeded. Table: {table_out.table_id}. Shape: {df.shape}'
+
+
 
 '''
 
