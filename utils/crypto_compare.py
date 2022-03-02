@@ -23,7 +23,6 @@ import requests
 import os
 import json
 
-CRYPTO_COMPARE_API_URL = "https://min-api.cryptocompare.com/"
 METHODS_ENUM = {
     1 : "ETH_price_by_ts",
     }
@@ -77,14 +76,14 @@ def flatten(d, parent_key='', sep='_'):
 
 #### TEMP CODE FOR LOCAL DEV
 # Set creds
-os.environ['CRYPTO_COMPARE_API_URL'] =  'https://min-api.cryptocompare.com/'
-os.environ['CRYPTO_COMPARE_API_KEY'] = str(open('.key/crypto_compare').read())
+# os.environ['CRYPTO_COMPARE_API_URL'] =  'https://min-api.cryptocompare.com/'
+# os.environ['CRYPTO_COMPARE_API_KEY'] = str(open('.key/crypto_compare').read())
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'aragon-analytics-6fffcc116564.json'
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'aragon-analytics-6fffcc116564.json'
 
-m = CryptoCompare(os.environ['CRYPTO_COMPARE_API_KEY'])
-ts = "1540855996"
+# m = CryptoCompare(os.environ['CRYPTO_COMPARE_API_KEY'])
+# ts = "1540855996"
 
-price = m.query("ETH_price_by_ts", ts=ts)
+# price = m.query("ETH_price_by_ts", ts=ts)
 
-print(price)
+# print(price)

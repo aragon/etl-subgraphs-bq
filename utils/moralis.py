@@ -24,12 +24,10 @@ import requests
 import os
 import json
 
-MORALIS_API_URL = "https://deep-index.moralis.io/api/v2/"
 METHODS_ENUM = {
     1 : "dateToBlock",
     2 : "erc20_price"
     }
-
 
 class Moralis:
     def __init__(self, api_key, cache=False):
@@ -95,17 +93,17 @@ def flatten(d, parent_key='', sep='_'):
 
 #### TEMP CODE FOR LOCAL DEV
 # Set creds
-os.environ['MORALIS_API_URL'] =  'https://deep-index.moralis.io/api/v2/'
-os.environ['MORALIS_API_KEY'] = str(open('.key/moralis').read())
+# os.environ['MORALIS_API_URL'] =  'https://deep-index.moralis.io/api/v2/'
+# os.environ['MORALIS_API_KEY'] = str(open('.key/moralis').read())
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'aragon-analytics-6fffcc116564.json'
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'aragon-analytics-6fffcc116564.json'
 
-m = Moralis(os.environ['MORALIS_API_KEY'])
-date_int = '1645344471'
-address = '0x89ab32156e46f46d02ade3fecbe5fc4243b9aaed'
+# m = Moralis(os.environ['MORALIS_API_KEY'])
+# date_int = '1645344471'
+# address = '0x89ab32156e46f46d02ade3fecbe5fc4243b9aaed'
 
-block = m.query("dateToBlock", date=date_int)
+# block = m.query("dateToBlock", date=date_int)
 
-price = m.query("erc20_price", address=address, block=block)
+# price = m.query("erc20_price", address=address, block=block)
 
-print(price)
+# print(price)
