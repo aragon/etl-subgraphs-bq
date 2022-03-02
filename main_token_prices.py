@@ -50,11 +50,10 @@ def main(testing_mode=True):
 
 
 '''
-
     - get last timestamp (createdAt)
     - get transactions at createdAt+1
-    - for each transaction
-    - - if not ETH or STABLE
+    - group transactions between ETH, stable and others
+    - - if others
 		- get block height query 
 		- get price for contract address at height
     - - if ETH
@@ -62,9 +61,10 @@ def main(testing_mode=True):
     - - if STABLE
         - get ETH price
     - upload new rows
-'''
-    return lastt
 
+    return last update
+    insert empty row if empty?
+'''
 
 # Set creds
 os.environ['MORALIS_APY_KEY'] = str(open(os.getenv('LOCAL_MORALIS_API_KEY')).read())
