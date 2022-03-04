@@ -1,5 +1,6 @@
 from audioop import add
 from .moralis import Moralis
+from .crypto_compare import CryptoCompare
 from .timer import RateLimited
 import os
 import yaml
@@ -16,7 +17,7 @@ LOCAL_CACHE_FILE = os.getenv('LOCAL_CACHE_FILE', '')
 MORALIS_MAX_REQ_PER_SEC = MORALIS_MAX_REQ_PER_MINUTE / 60
 
 m = Moralis(os.environ['MORALIS_APY_KEY'])
-
+cc = CryptoCompare(os.environ['CRYPTO_COMPARE_API_URL'])
 # Load tokens data
 with open(os.environ['TOKENS_YAML']) as f:
         tokens_dict = yaml.safe_load(f)
@@ -28,6 +29,7 @@ class FinanceParser:
         self.df = df
         self.cache = None
         if os.path.isfile(LOCAL_CACHE_FILE):
+            pass
             self.cache = pd.read_csv(LOCAL_CACHE_FILE, sep=';')
 
     def get_transactions_prices(self):
@@ -54,12 +56,18 @@ class FinanceParser:
                 tmp_df.loc[tmp_df[DATE_RANGE_COL]==max]
                 )
 
-        tmp_dfs = pd.concat(rows)
-        tmp_dfs.to_csv('tmp_dfs.csv')
-        self.df_erc20 = tmp_dfs
+        if rows:
+            tmp_dfs = pd.concat(rows)
+            tmp_dfs.to_csv('tmp_dfs.csv')
+        else:
+            tmp_dfs = self.cache.copy()
+        self.df_erc20 = pd.concat([self.df_erc20, tmp_dfs])
 
         df = self.get_erc20_transactions_data()
         df.to_csv('df_prices.csv')
+
+        df = self.get_eth_price_by_ts(df)
+        df.to_csv('df_prices_eth.csv')
 
         return df
     
@@ -83,6 +91,7 @@ class FinanceParser:
             price.update({
                 "token_id":address,
                 "block":block,
+                "ts":date
             })
             print(price)
             data.append(price)
@@ -93,4 +102,19 @@ class FinanceParser:
 
     @RateLimited(CRYPTO_COMPARE_MAX_REQ_PER_SEC)
     def get_eth_price_by_ts(df):
-        pass
+        data = []
+        for _, row in df.iterrows():
+            ts = row[DATE_RANGE_COL]
+            
+            eth_data = cc.query(
+                method='ETH_price_by_ts',
+                ts=ts
+            )
+            eth_data.update({
+                "ts":ts,
+            })
+            print(eth_data)
+            data.append(eth_data)
+        _df_prices = pd.DataFrame(data)
+
+        return pd.concat([df, _df_prices])        

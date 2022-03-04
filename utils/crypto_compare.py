@@ -31,7 +31,6 @@ METHODS_ENUM = {
 class CryptoCompare:
     def __init__(self, api_key, cache=False):
         self.api_key = api_key
-        self.api_url = os.getenv('CRYPTO_COMPARE_API_URL') 
         self.headers = {
             "accept" : "application/json",
             "authorization": f"Apikey {self.api_key}"
