@@ -222,8 +222,8 @@ class BQ_table:
         query = f"""         
             SELECT *
             FROM {self.table_id} 
-            WHERE {block_col} > {min_block}
-            LIMIT 1
+            WHERE CAST ({block_col} AS NUMERIC) > {min_block}
+            ORDER BY {block_col} ASC
             """
         df_response = self._query_job(query)
         return df_response

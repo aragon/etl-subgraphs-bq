@@ -38,13 +38,13 @@ class Moralis:
             "X-API-Key": self.api_key
             }
     
-    def _check_limits():
-        pass
-
     def query(self, method, **kwargs):
-        self._check_limits()
         # Set Ethereum as default - https://docs.moralis.io/moralis-server/web3-sdk/intro#supported-chains
         chain = kwargs.get('chain', 'eth') 
+        
+        if method not in METHODS_ENUM.values():
+            raise Exception(f"Method '{method}' not included in METHODS_ENUM")
+
         if method == METHODS_ENUM.get(1):
             date = kwargs.get('date')
             url = f"{self.api_url}dateToBlock?chain={chain}&date={date}"
@@ -65,8 +65,9 @@ class Response:
     def __init__(self, r, method):
         self.r = r
         self.method = method
-        self.content = json.loads(r.content)
-        self.status_code = r.status_code
+        self.content = getattr(r, 'content', "{}")
+        self.content = json.loads(self.content)
+        self.status_code = getattr(r, 'status_code', None)
         self.message = self.content.get('message')
     
     def parse(self):
