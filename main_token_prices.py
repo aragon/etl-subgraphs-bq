@@ -30,21 +30,20 @@ def main(testing_mode=True):
             last_update = table_out.get_last_block(DATE_RANGE_COL)
             last_update = str(last_update) if pd.notnull(last_update) else '0'
     
+    print("Last block: ", last_update)
     ## Get base df from createdAt+1
     df_base = table_orig.select_all_gt_block(DATE_RANGE_COL, last_update)
 
     # Local testing
-    #df_base = df_base.head(1000)
+    df_base = df_base.head(1000)
+    '''
+    Check
+    - df_base: low row numbers
+    - get_eth_price_by_ts not including createdAt
+    '''
     
     fp = FinanceParser(df_base)
     df = fp.get_transactions_prices()
-
-    ### Filter non ETH or stable
-    #### QUERY ERC20 data 
-
-    # Append df_erc20 with df_others
-    # Get USD/ETH price for all
-    df = get_eth_price_by_ts(df)
 
     if df.empty:
         return f'No new rows to add to Table: {table_out.table_id}.'
@@ -58,8 +57,6 @@ def main(testing_mode=True):
     if errs:
         return f'Execution ended with {len(errs)} errors. Check Logging.'
     return f'Execution succeded. Table: {table_out.table_id}. Shape: {df.shape}'
-
-
 
 if args.local:
     # Set google creds

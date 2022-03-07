@@ -1,7 +1,9 @@
-STABLE_SYMBOLS: ['DAI', 'USDT', 'USDC', 'cDAI', 'aDAI']
+STABLE_SYMBOLS: ['DAI', 'USDT', 'USDC', 'cDAI', 'aDAI', 'cUSDT']
 # Used for stables with unknown token symbol. 
 # So as to avoid ERC20 calls. 
 STABLE_ADDRESSES : [
   '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', # SAI (former DAI)
+  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', # WETH
+  '0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9', # cUSDT
 ]
-ETH_SYMBOLS: ['ETH']
+ETH_SYMBOLS: ['ETH', 'WETH']

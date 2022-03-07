@@ -15,6 +15,8 @@ DATE_RANGE_COL = os.getenv('DATE_RANGE_COL')
 LOCAL_CACHE_FILE = os.getenv('LOCAL_CACHE_FILE', '')
 
 MORALIS_MAX_REQ_PER_SEC = MORALIS_MAX_REQ_PER_MINUTE / 60
+MORALIS_NO_PRICE_MESSAGE = os.getenv('MORALIS_NO_PRICE_MESSAGE')
+SEP = ';'
 
 m = Moralis(os.environ['MORALIS_APY_KEY'])
 cc = CryptoCompare(os.environ['CRYPTO_COMPARE_API_URL'])
@@ -28,80 +30,89 @@ class FinanceParser:
     def __init__(self, df):
         self.df = df
         self.cache = None
+        self.cache_set = set()
         if os.path.isfile(LOCAL_CACHE_FILE):
             pass
-            self.cache = pd.read_csv(LOCAL_CACHE_FILE, sep=';')
+            # self.cache = pd.read_csv(LOCAL_CACHE_FILE, sep=SEP)
+            # self.cache_set = set()
+            # for _, row in self.cache.iterrows():
+            #     self.cache_set.add((row[TOKEN_ADDRESS_COL], row[DATE_RANGE_COL]))
+
 
     def get_transactions_prices(self):
+        # Filer out all transactions realted to stables and ETH
         self.df_erc20 = self.df.loc[
         (~self.df[TOKEN_SYMBOL_COL].isin(STABLE_SYMBOLS)) &
         (~self.df[TOKEN_SYMBOL_COL].isin(ETH_SYMBOLS)) &
-        (~self.df[TOKEN_ADDRESS_COL].isin(ETH_SYMBOLS))
+        (~self.df[TOKEN_ADDRESS_COL].isin(STABLE_ADDRESSES))
         ]
-        self.df_others = self.df.loc[~self.df[ID_COL].isin(self.df_erc20[ID_COL])]
-
-        # TMP
-        unique_addresses = self.df_erc20[TOKEN_ADDRESS_COL].unique()
-        rows = []
-        for a in unique_addresses:
-            if isinstance(self.cache, pd.DataFrame) and a in self.cache[TOKEN_ADDRESS_COL].values:
-                continue
-            tmp_df = self.df_erc20.loc[self.df_erc20[TOKEN_ADDRESS_COL]==a]
-            max = (tmp_df[DATE_RANGE_COL].max())
-            min = (tmp_df[DATE_RANGE_COL].min())
-            rows.append(
-                tmp_df.loc[tmp_df[DATE_RANGE_COL]==min]
-                )
-            rows.append(
-                tmp_df.loc[tmp_df[DATE_RANGE_COL]==max]
-                )
-
-        if rows:
-            tmp_dfs = pd.concat(rows)
-            tmp_dfs.to_csv('tmp_dfs.csv')
-        else:
-            tmp_dfs = self.cache.copy()
-        self.df_erc20 = pd.concat([self.df_erc20, tmp_dfs])
-
+        self.df_others = (self.df.loc[~self.df[ID_COL].isin(
+            self.df_erc20[ID_COL])])
+            
         df = self.get_erc20_transactions_data()
-        df.to_csv('df_prices.csv')
+        df.to_csv(LOCAL_CACHE_FILE, sep=SEP)
+
+        df = pd.concat([df, self.df_others])
 
         df = self.get_eth_price_by_ts(df)
-        df.to_csv('df_prices_eth.csv')
+        df.to_csv('df_prices_eth.csv', sep=SEP)
 
         return df
     
     @RateLimited(MORALIS_MAX_REQ_PER_SEC)
     def get_erc20_transactions_data(self):
-        data = []
+        data_list = []
         _df = self.df_erc20.copy()
-        for _, row in _df.iterrows():
-            date = row[DATE_RANGE_COL]
-            address = row[TOKEN_ADDRESS_COL]
-            price = None
-            block = m.query(
-                    method="dateToBlock", 
-                    date=date
-                    )
-            price = m.query(
-                    method="erc20_price", 
-                    block=block,
-                    address=address
-                    )
-            price.update({
-                "token_id":address,
-                "block":block,
-                "ts":date
-            })
-            print(price)
-            data.append(price)
-        _df_prices = pd.DataFrame(data)
+        unique_addresses = _df[TOKEN_ADDRESS_COL].unique()
+        _df = _df.sort_values(
+            by=DATE_RANGE_COL,
+            ascending=False)
+        for a in unique_addresses:
+            tmp_df = _df.loc[_df[TOKEN_ADDRESS_COL]==a]
+            continue_bool= True
+            for _, row in tmp_df.iterrows():
+                date = row[DATE_RANGE_COL]
+                address = row[TOKEN_ADDRESS_COL]
+                data = {
+                    "token_id":address,
+                     DATE_RANGE_COL:date
+                }
+                # Check if present in cache
+                if ((row[TOKEN_ADDRESS_COL], row[DATE_RANGE_COL]) 
+                in self.cache_set):
+                    continue
+                if continue_bool:
+                    # If API has data for this contract address at this date   
+                    block = m.query(
+                            method="dateToBlock", 
+                            date=date
+                            )
+                    data.update({
+                        "block":block, 
+                    })
+                    price = m.query(
+                            method="erc20_price", 
+                            block=block,
+                            address=address
+                            )
+                    # Merge dicts
+                    data = {**data, **price}
+                    if price.get('message', None) == MORALIS_NO_PRICE_MESSAGE:
+                        # Flag contrac and date to avoid next API calls
+                        continue_bool = False
+                else:
+                    data.update({
+                        "message":MORALIS_NO_PRICE_MESSAGE, 
+                    })
+                data_list.append(data)
+        
+        _df_prices = pd.DataFrame(data_list)
 
-        return pd.concat([_df, _df_prices])
+        return _df.merge(_df_prices, on=[TOKEN_ADDRESS_COL, DATE_RANGE_COL], how='left')
 
 
     @RateLimited(CRYPTO_COMPARE_MAX_REQ_PER_SEC)
-    def get_eth_price_by_ts(df):
+    def get_eth_price_by_ts(self, df):
         data = []
         for _, row in df.iterrows():
             ts = row[DATE_RANGE_COL]
@@ -111,10 +122,9 @@ class FinanceParser:
                 ts=ts
             )
             eth_data.update({
-                "ts":ts,
+                DATE_RANGE_COL:ts,
             })
-            print(eth_data)
             data.append(eth_data)
         _df_prices = pd.DataFrame(data)
 
-        return pd.concat([df, _df_prices])        
+        return pd.concat([df, _df_prices], axis=1)        
