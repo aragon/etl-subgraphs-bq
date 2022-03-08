@@ -7,10 +7,12 @@ print('ENV_VARS_PATH:', ENV_VARS_PATH)
 load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
 import pandas as pd
 import os
-import yaml
+import time
 
 
 def main(testing_mode=True):
+    print(time.strftime("%Y/%m/%d-%H:%M:%S"))
+
     # Import after setting env_vars (credentials)
     from utils.bq import BQ_table 
     from utils.finance_transactions import FinanceParser
@@ -35,7 +37,7 @@ def main(testing_mode=True):
     df_base = table_orig.select_all_gt_block(DATE_RANGE_COL, last_update)
 
     # Local testing
-    df_base = df_base.head(1000)
+    df_base = df_base.head(300)
     '''
     Check
     - df_base: low row numbers
@@ -44,7 +46,7 @@ def main(testing_mode=True):
     
     fp = FinanceParser(df_base)
     df = fp.get_transactions_prices()
-
+    
     if df.empty:
         return f'No new rows to add to Table: {table_out.table_id}.'
 
@@ -54,6 +56,9 @@ def main(testing_mode=True):
             partitioned_day=True)
 
     errs = table_out.uplaoad_df_to_bq(df)
+    
+    print(time.strftime("%Y/%m/%d-%H:%M:%S"))
+
     if errs:
         return f'Execution ended with {len(errs)} errors. Check Logging.'
     return f'Execution succeded. Table: {table_out.table_id}. Shape: {df.shape}'
