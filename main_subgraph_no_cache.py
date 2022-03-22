@@ -42,6 +42,9 @@ def main(testing_mode=True):
     df = unnest_balances(df)
 
     df['timestamp_utc'] = ts
+    df['token_decimals'] = df['token_decimals'].replace({None: 0})
+    df['balance'] = df['balance'].replace({None: 0})
+
 
     if df.empty:
         return f'No new rows to add to Table: {table.table_id}.'
