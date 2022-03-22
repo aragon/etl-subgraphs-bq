@@ -37,7 +37,7 @@ def main(testing_mode=True):
     df_base = table_orig.select_all_gt_block(DATE_RANGE_COL, last_update)
 
     # Local testing
-    df_base = df_base.head(300)
+    df_base = df_base.head(1000)
     '''
     Check
     - df_base: low row numbers

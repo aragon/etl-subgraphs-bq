@@ -49,62 +49,19 @@ class FinanceParser:
         self.df_others = (self.df.loc[~self.df[ID_COL].isin(
             self.df_erc20[ID_COL])])
             
-        df = self.get_erc20_transactions_data()
-        df.to_csv(LOCAL_CACHE_FILE, sep=SEP)
+        # df = self._get_erc20_transactions_data()
+        # df.to_csv(LOCAL_CACHE_FILE, sep=SEP)
 
-        df = pd.concat([df, self.df_others])
+        # df = pd.concat([df, self.df_others])
 
-        df = self._get_eth_price_by_ts(df)
+        #df = self._get_eth_price_by_ts(df)
+        df = self._get_eth_price_by_ts(self.df)
         df.to_csv('df_prices_eth.csv', sep=SEP)
 
         return df
     
-    @RateLimited(MORALIS_MAX_REQ_PER_SEC)
-    def get_erc20_transactions_data(self):
-        data_list = []
-        _df = self.df_erc20.copy()
-        unique_addresses = _df[TOKEN_ADDRESS_COL].unique()
-        _df = _df.sort_values(
-            by=DATE_RANGE_COL,
-            ascending=False)
-        for a in unique_addresses:
-            tmp_df = _df.loc[_df[TOKEN_ADDRESS_COL]==a]
-            continue_bool= True
-            for _, row in tmp_df.iterrows():
-                date = row[DATE_RANGE_COL]
-                address = row[TOKEN_ADDRESS_COL]
-                data = {
-                    "token_id":address,
-                     DATE_RANGE_COL:date
-                }
-                if continue_bool:
-                    # If API has data for this contract address at this date   
-                    block = m.query(
-                            method="dateToBlock", 
-                            date=date
-                            )
-                    data.update({
-                        "block":block, 
-                    })
-                    price = m.query(
-                            method="erc20_price", 
-                            block=block,
-                            address=address
-                            )
-                    # Merge dicts
-                    data = {**data, **price}
-                    if price.get('message', None) == MORALIS_NO_PRICE_MESSAGE:
-                        # Flag contrac and date to avoid next API calls
-                        continue_bool = False
-                else:
-                    data.update({
-                        "message":MORALIS_NO_PRICE_MESSAGE, 
-                    })
-                data_list.append(data)
-        
-        _df_prices = pd.DataFrame(data_list)
-
-        return _df.merge(_df_prices, on=[TOKEN_ADDRESS_COL, DATE_RANGE_COL], how='left')
+    def _get_erc20_transactions_data(self):
+        return get_erc20_transactions_data(self.df_erc20)
 
     def _get_eth_price_by_ts(self, df):
         return get_eth_price_by_ts(df)
@@ -130,9 +87,9 @@ def get_eth_price_by_ts(df):
 
 
 @RateLimited(MORALIS_MAX_REQ_PER_SEC)
-def get_erc20_transactions_data(self):
+def get_erc20_transactions_data(df_erc20):
     data_list = []
-    _df = self.df_erc20.copy()
+    _df = df_erc20.copy()
     unique_addresses = _df[TOKEN_ADDRESS_COL].unique()
     _df = _df.sort_values(
         by=DATE_RANGE_COL,
