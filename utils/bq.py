@@ -217,7 +217,17 @@ class BQ_table:
             """
         df_response = self._query_job(query)
         return self._get_last_block(df_response)
-    
+
+    def select_all_gt_block(self, block_col, min_block):
+        query = f"""         
+            SELECT *
+            FROM {self.table_id} 
+            WHERE {block_col} > {min_block}
+            LIMIT 1
+            """
+        df_response = self._query_job(query)
+        return df_response
+
     def _get_last_block(self, df):
         _last_block = df.iloc[0][0]
         last_block = str(int(_last_block)) if not pd.isnull(_last_block) else None
