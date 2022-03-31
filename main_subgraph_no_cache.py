@@ -39,7 +39,8 @@ def main(testing_mode=True):
 
     df = pd.DataFrame(data)
     
-    df = unnest_balances(df)
+    if 'vault_balances' in PROCESS_NAME:
+        df = unnest_balances(df)
 
     df['timestamp_utc'] = ts
     df['token_decimals'] = df['token_decimals'].replace({None: 0})
@@ -59,7 +60,8 @@ def main(testing_mode=True):
         return f'Execution ended with {len(errs)} errors. Check Logging.'
     return f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}'
 
-_ENV_VARS_PATH = './env_vars/mainnet_client_finance_vault_balances.env'
+#_ENV_VARS_PATH = './env_vars/mainnet_client_finance_vault_balances.env'
+_ENV_VARS_PATH = './env_vars/mainnet_client_finance_token_balances.env'
 
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
