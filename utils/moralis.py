@@ -1,22 +1,17 @@
 # https://docs.moralis.io/misc/rate-limit
 '''
+https://deep-index.moralis.io/api-docs/
 https://docs.moralis.io/misc/rate-limit
 https://moralis.io/pricing/
 
 Api limit: 
 - 1,500 reqs/min
 - 10,000,000 reqs/month *
+- 333k per day / 111k ERC per day
 
 Api request cost: 
 - eth_blockNumber = 1 request
 - erc20/{address}/price = 3 requests
-
-As of 23/02/2022:
-- 18,442 transfers
-- ~11k were stable or ETH
-
-18,442 (block time) + 18,442 * 3 = 73,768 max requests (50 min)
-8k * 4 = 32,000 (21 min)
 '''
 import collections
 from argparse import ONE_OR_MORE
@@ -38,13 +33,13 @@ class Moralis:
             "X-API-Key": self.api_key
             }
     
-    def _check_limits():
-        pass
-
     def query(self, method, **kwargs):
-        self._check_limits()
         # Set Ethereum as default - https://docs.moralis.io/moralis-server/web3-sdk/intro#supported-chains
         chain = kwargs.get('chain', 'eth') 
+        
+        if method not in METHODS_ENUM.values():
+            raise Exception(f"Method '{method}' not included in METHODS_ENUM")
+
         if method == METHODS_ENUM.get(1):
             date = kwargs.get('date')
             url = f"{self.api_url}dateToBlock?chain={chain}&date={date}"
@@ -65,8 +60,9 @@ class Response:
     def __init__(self, r, method):
         self.r = r
         self.method = method
-        self.content = json.loads(r.content)
-        self.status_code = r.status_code
+        self.content = getattr(r, 'content', "{}")
+        self.content = json.loads(self.content)
+        self.status_code = getattr(r, 'status_code', None)
         self.message = self.content.get('message')
     
     def parse(self):
