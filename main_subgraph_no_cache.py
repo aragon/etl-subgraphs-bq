@@ -59,7 +59,7 @@ def main(testing_mode=True):
         return f'Execution ended with {len(errs)} errors. Check Logging.'
     return f'Execution succeded. Table: {table.table_id}. Shape: {df.shape}'
 
-_ENV_VARS_PATH = './env_vars/mainnet_client_finance_balances.env'
+_ENV_VARS_PATH = './env_vars/mainnet_client_finance_vault_balances.env'
 
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
