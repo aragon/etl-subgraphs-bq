@@ -1,0 +1,25 @@
+{
+  vaults(
+    orderBy:createdAt
+    orderDirection:asc
+    first:$first,
+    skip:$skip
+  ) {
+    dao
+    createdAt
+    
+    balances {
+      vault{
+      id
+      }
+      id
+      token{
+        id
+        name
+        symbol
+        decimals
+      }
+      balance
+    }
+  }
+}

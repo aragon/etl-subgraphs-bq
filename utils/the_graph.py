@@ -3,6 +3,7 @@ import requests
 from pathlib import Path
 import re
 from .utils import flatten, flatten_2
+import pandas as pd
 class GraphQuery:
     QUERY_FIRST = '1000'
     QUERY_SKIP = 'null'
@@ -111,3 +112,23 @@ class GraphQuery:
                 _skip += int(self.query_first)
         
         return data_list
+
+def unnest_balances(df):
+    data = []
+    for _, row in df.iterrows():
+        base = {
+            "dao" : row["dao"],
+            "createdAt" : row["createdAt"]
+        }
+        balances = row["balances"]
+        if balances:
+            for bal in balances:
+                bal = flatten(bal)
+                base = base.copy()
+                base.update(bal)
+                data.append(base)
+        else:
+            data.append(base)
+
+    df_output = pd.DataFrame(data)
+    return df_output

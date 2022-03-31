@@ -1,0 +1,22 @@
+{
+  tokenBalances
+     (
+    orderBy:id
+    orderDirection:asc
+    first:$first,
+    skip:$skip
+  )
+  {
+    id
+    vault {
+      id
+      dao
+    }
+    token {
+      id
+      name
+      decimals
+    }
+    balance
+  }
+}
