@@ -35,14 +35,19 @@ def _get_token_prices(df):
     data_list = []
     for _, row in df.iterrows():
             address = row[TOKEN_ADDRESS_COL]
+            token_name = row[TOKEN_SYMBOL_COL]
             data = {
-                "token_id":address,            }
+                "token_id":address,
+                "token_name":token_name,
+                }
 
             price = m.query(
-                        method="erc20_price"
+                        method="erc20_price",
+                        address=address
                         )
             # Merge dicts
             data = {**data, **price}
+            data_list.append(data)
     
     _df_prices = pd.DataFrame(data_list)
 

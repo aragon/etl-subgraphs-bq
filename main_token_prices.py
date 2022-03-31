@@ -1,7 +1,8 @@
 from dotenv import load_dotenv
 from utils.argparser import args
+
 # Set creds
-_ENV_VARS_PATH = './env_vars/mainnet_client_finance_transactions_prices.env'
+_ENV_VARS_PATH = './env_vars/mainnet_client_finance_token_prices.env'
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
 load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
@@ -16,7 +17,7 @@ def main(testing_mode=True):
 
     # Import after setting env_vars (credentials)
     from utils.bq import BQ_table 
-    from utils.finance_transactions import FinanceParser
+    from utils.finance_transactions import _get_token_prices
 
     BQ_DATASET = os.getenv('BQ_DATASET')
     BQ_TABLE_ORIG = os.getenv('BQ_TABLE_ORIG')
@@ -37,12 +38,10 @@ def main(testing_mode=True):
             last_update = str(last_update) if pd.notnull(last_update) else '0'
     
     print("last_update: ", last_update)
-    ## Get base df from createdAt+1
     df_base = table_orig.select_all()
     
-    fp = FinanceParser(df_base)
-    df = fp.get_token_prices()
-    df['timestamp_utc'] = ts
+    df = _get_token_prices(df_base)
+    df[DATE_RANGE_COL] = ts
     
     if df.empty:
         return f'No new rows to add to Table: {table_out.table_id}.'

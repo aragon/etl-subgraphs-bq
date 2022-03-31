@@ -1,22 +1,17 @@
 # https://docs.moralis.io/misc/rate-limit
 '''
+https://deep-index.moralis.io/api-docs/
 https://docs.moralis.io/misc/rate-limit
 https://moralis.io/pricing/
 
 Api limit: 
 - 1,500 reqs/min
 - 10,000,000 reqs/month *
+- 333k per day / 111k ERC per day
 
 Api request cost: 
 - eth_blockNumber = 1 request
 - erc20/{address}/price = 3 requests
-
-As of 23/02/2022:
-- 18,442 transfers
-- ~11k were stable or ETH
-
-18,442 (block time) + 18,442 * 3 = 73,768 max requests (50 min)
-8k * 4 = 32,000 (21 min)
 '''
 import collections
 from argparse import ONE_OR_MORE
