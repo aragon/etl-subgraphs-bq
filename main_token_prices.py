@@ -8,6 +8,7 @@ load_dotenv(dotenv_path=ENV_VARS_PATH, override=True)
 import pandas as pd
 import os
 import time
+from datetime import datetime,timezone
 
 
 def main(testing_mode=True):
@@ -27,25 +28,21 @@ def main(testing_mode=True):
     table_orig = BQ_table(BQ_DATASET, BQ_TABLE_ORIG)
     table_out = BQ_table(BQ_DATASET, BQ_TABLE_OUT)
 
+    now_utc = datetime.now(timezone.utc)
+    ts = int(now_utc.timestamp()*1000000)
+
     last_update:str = '0'
     if table_out.exists:
             last_update = table_out.get_last_block(DATE_RANGE_COL)
             last_update = str(last_update) if pd.notnull(last_update) else '0'
     
-    print("Last block: ", last_update)
+    print("last_update: ", last_update)
     ## Get base df from createdAt+1
-    df_base = table_orig.select_all_gt_block(DATE_RANGE_COL, last_update)
-
-    # Local testing
-    df_base = df_base.head(1000)
-    '''
-    Check
-    - df_base: low row numbers
-    - get_eth_price_by_ts not including createdAt
-    '''
+    df_base = table_orig.select_all()
     
     fp = FinanceParser(df_base)
-    df = fp.get_transactions_prices()
+    df = fp.get_token_prices()
+    df['timestamp_utc'] = ts
     
     if df.empty:
         return f'No new rows to add to Table: {table_out.table_id}.'
@@ -66,7 +63,6 @@ def main(testing_mode=True):
 if args.local:
     # Set google creds
     os.environ['MORALIS_APY_KEY'] = str(open(os.getenv('LOCAL_MORALIS_API_KEY')).read())
-    os.environ['LOCAL_CRYPTO_COMPARE_API_URL'] = str(open(os.getenv('LOCAL_CRYPTO_COMPARE_API_URL')).read())
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('LOCAL_GOOGLE_APPLICATION_CREDENTIALS')
     args.testing = False
 
