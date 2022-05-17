@@ -1,0 +1,38 @@
+{
+  casts(
+    first:$first, 
+    skip:$skip,
+    orderBy:createdAt, 
+    orderDirection:asc,
+    where:{  
+      createdAt_gt:$createdAt_gt,
+      }
+    )
+    { 
+    id
+    vote {
+      orgAddress
+      appAddress
+      creator
+      originalCreator
+      executed
+      executedAt
+      startDate
+      supportRequiredPct
+      minAcceptQuorum
+      votingPower
+    }
+    voter {
+      id
+      address
+    }
+    supports
+    stake
+    createdAt
+  }
+}
+
+
+# https://thegraph.com/hosted-service/subgraph/aragon/aragon-voting-mainnet
+# https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-mainnet
+# https://github.com/aragon/connect/tree/master/packages/connect-thegraph
