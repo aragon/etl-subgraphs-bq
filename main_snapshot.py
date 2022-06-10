@@ -50,6 +50,9 @@ def main(testing_mode=True):
     
     if not df_spaces_base.empty:
         df_spaces_new = df_spaces_new[~df_spaces_new['id'].isin(ids)]
+        # Filter out new cols not present in base schema
+        cols_to_kep = [col for col in df_spaces_new if col in df_spaces_base]
+        df_spaces_new = df_spaces_new.loc[:, cols_to_kep]
 
     print(f"Spaces: new fields to add {df_spaces_new.shape[0]}")
 
