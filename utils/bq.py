@@ -212,7 +212,7 @@ class BQ_table:
     
     def get_last_block(self, block_col):
         query = f"""         
-            SELECT max({block_col}) max_block_height
+            SELECT max(CAST({block_col} as INT64)) max_block_height
             FROM {self.table_id} 
             """
         df_response = self._query_job(query)

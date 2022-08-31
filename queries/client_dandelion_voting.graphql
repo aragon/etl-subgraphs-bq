@@ -1,0 +1,34 @@
+{
+  votes(
+    first:$first, 
+    skip:$skip,
+    orderBy:executionBlock, 
+    orderDirection:asc,
+    where:{  
+      executed:true,
+      executionBlock_gt:$executionBlock_gt,
+      }
+    )
+    { 
+    id
+    orgAddress
+    appAddress
+    creator
+    metadata
+    executed
+    executionBlock
+    startBlock
+    snapshotBlock
+    supportRequiredPct
+    minAcceptQuorum
+    yea
+    nay
+    votingPower
+    voteNum
+
+  }
+}
+
+# https://thegraph.com/hosted-service/subgraph/aragon/aragon-voting-mainnet
+# https://api.thegraph.com/subgraphs/name/aragon/aragon-voting-mainnet
+# https://github.com/aragon/connect/tree/master/packages/connect-thegraph
