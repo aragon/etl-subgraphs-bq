@@ -1,10 +1,11 @@
 {
   organizations(
       orderBy: createdAt, 
-      orderDirection: desc,
+      orderDirection: asc,
       first:$first, 
       skip:$skip,
-      where:{createdAt_gt:$createdAt_gt}) {
+      where:{createdAt_gt:$createdAt_gt}) 
+      {
     address
     createdAt
     recoveryVault

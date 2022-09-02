@@ -1,6 +1,6 @@
-from main_snapshot import main
+from main_subgraph import main
 
 accum = 0
 while accum < 1651831124:
-    print("---accum: ",accum)
     accum = main()
+    print("---accum: ",accum)
