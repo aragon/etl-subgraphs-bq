@@ -1,0 +1,23 @@
+query {
+  tokenVotingPlugins {
+    id
+    dao{
+      id
+    }
+    votingMode
+    supportThreshold
+    minParticipation
+    minDuration
+    minProposerVotingPower
+    token{
+      id
+      name
+      symbol
+     __typename
+    ... on ERC20Contract {
+      decimals
+    }
+
+    }
+  }
+}
