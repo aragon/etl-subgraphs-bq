@@ -78,7 +78,6 @@ class BQ_table:
         # Replace pd nulls with None (for inserting in BQ)
         #df = df.where(pd.notnull(df), None) 
         df = df.replace({np.nan: None})
-
         df = self._change_dtypes(df)
         if df.index.is_unique == False:
             df = df.reset_index(drop=True)

@@ -1,11 +1,11 @@
-name: aragon_app_mainnet_tokens
+name: aragon_app_mumbai_plugins_registered
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
 jobs:
-  aragon_app_mainnet_tokens:
+  aragon_app_mumbai_plugins_registered:
     runs-on: ubuntu-latest
     steps:
       - name: "checkout"
@@ -21,6 +21,8 @@ jobs:
       - name: "install dependencies"
         run: pip install -r requirements.txt
       - name: "run"
-        run: python main_subgraph.py --no-testing --no-local --env_vars ./env_vars/aragon_app_mainnet_tokens.env
+        run: python main_covalent_topics.py --no-testing --no-local --env_vars ./env_vars/aragon_app_mumbai_plugins_registered.env --check_last_block
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key
+          COVALENT_API_KEY: ${{ secrets.COVALENT_API_KEY }}
+          
