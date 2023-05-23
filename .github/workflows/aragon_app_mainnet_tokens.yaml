@@ -1,0 +1,26 @@
+name: aragon_app_mainnet_tokens
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  mainnet_client_daos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checkout"
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - name: "add google key"
+        run: echo -n $GOOGLE_API_KEY | base64 -d >> ~/.google_api_key
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      - name: "install dependencies"
+        run: pip install -r requirements.txt
+      - name: "run"
+        run: python main_subgraph.py --no-testing --no-local --env_vars ./env_vars/aragon_app_mainnet_tokens.env
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ~/.google_api_key

@@ -22,11 +22,10 @@ def main(testing_mode=True):
     table = BQ_table(BQ_DATASET, BQ_TABLE)
 
     last_update:str = '0'
-    if table.exists:
+    if table.exists and DATE_RANGE_COL:
             last_update = table.get_last_block(DATE_RANGE_COL)
             last_update = str(last_update) if pd.notnull(last_update) else '0'
-    
-    print("last update: ", last_update)
+            print("last update: ", last_update)
     
     query = GraphQuery(
         query_path=QUERY_PATH,
@@ -69,8 +68,9 @@ def main(testing_mode=True):
 #_ENV_VARS_PATH = './env_vars/mainnet_client_finance_transactions.env'
 #_ENV_VARS_PATH = './env_vars/mainnet_client_voting.env'
 #_ENV_VARS_PATH = './env_vars/ens_domains.env'
-_ENV_VARS_PATH = './env_vars/mainnet_client_dandelion_voting.env'
+#_ENV_VARS_PATH = './env_vars/mainnet_client_dandelion_voting.env'
 #_ENV_VARS_PATH = './env_vars/mainnet_client_casts.env'
+_ENV_VARS_PATH = './env_vars/aragon_app_mainnet_tokens.env'
 
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 print('ENV_VARS_PATH:', ENV_VARS_PATH)
