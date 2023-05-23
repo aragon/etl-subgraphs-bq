@@ -5,7 +5,7 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  mainnet_client_daos:
+  aragon_app_polygon_tokens:
     runs-on: ubuntu-latest
     steps:
       - name: "checkout"
