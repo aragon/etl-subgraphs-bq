@@ -67,7 +67,7 @@ def main(testing_mode=True, check_last_block=False):
         starting_block=starting_block,
         ending_block=ending_block,
     )
-    print(f"- starting_block: {starting_block} | ending_block: {ending_block}")
+    print(f"""- starting_block: {starting_block} | ending_block: {ending_block} | diff: {int(ending_block) - int(starting_block)}""")
 
 
     df = r.get_df()
@@ -87,6 +87,9 @@ def main(testing_mode=True, check_last_block=False):
             partitioned_day=True
         )
 
+        bq_table_cols = table.get_column_names()
+        cols_to_keep = [col for col in bq_table_cols if col in df.columns]
+        df = df[cols_to_keep] # filter out cols not present in BQ
         errs = table.uplaoad_df_to_bq(df)
         output = ''
         if errs:
@@ -98,7 +101,7 @@ def main(testing_mode=True, check_last_block=False):
 
 #_ENV_VARS_PATH = './env_vars/mumbai_client_daos.env'
 #_ENV_VARS_PATH = './env_vars/polygon_client_daos.env'
-#_ENV_VARS_PATH = './env_vars/polygon_client_daos_events.env'
+_ENV_VARS_PATH = './env_vars/polygon_client_daos_events.env'
 #_ENV_VARS_PATH = './env_vars/polygon_client_voting_events.env'
 #_ENV_VARS_PATH = './env_vars/bsc_testnet_client_daos.env'
 #_ENV_VARS_PATH = './env_vars/bsc_testnet_client_daos_events.env'
@@ -107,7 +110,7 @@ def main(testing_mode=True, check_last_block=False):
 #_ENV_VARS_PATH = './env_vars/fuji_client_daos_events.env'
 #_ENV_VARS_PATH = './env_vars/fuji_client_voting_events.env'
 #_ENV_VARS_PATH = './env_vars/mainnet_client_voting.env'
-_ENV_VARS_PATH = './env_vars/syndicate_mainnet_daos.env'
+#_ENV_VARS_PATH = './env_vars/syndicate_mainnet_daos.env'
 
 ENV_VARS_PATH = args.env_vars if args.env_vars != None else _ENV_VARS_PATH
 
