@@ -45,7 +45,7 @@ class GraphQuery:
         if errors:
             raise ValueError(f'{r.text}')
         
-        data = data.get(self.q_name)
+        data = data.get(list(data.keys())[0])
         data = self._flatten(data)
         return data
 
