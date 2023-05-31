@@ -3,4 +3,5 @@ DeployDAO : '0x3a7eb042a769adf51e9be78b68ed7af0ad7b379246536efc376ed2ca01238282'
 NewAppProxy : '0xd880e726dced8808d727f02dd0e6fdd3a945b24bfee77e13367bcbe61ddbaf47' #params: (address, bool, bytes32)
 ExecuteVote : '0xbf8e2b108bb7c980e08903a8a46527699d5e84905a082d56dacb4150725c8cab' #params: (uint256) 
 Syndicate_DAO : '0x5fb43bb458994f457693950959aff3a8815320c4da2fb30aa66137420808172e' #unverified contract
-PluginRepoRegistered : '0x8cc06643d6cbee78b006d2df2db4d2487b69dd64bb2c96088280fb29dd93a0b2'
+PluginRepoRegistered : '0x8cc06643d6cbee78b006d2df2db4d2487b69dd64bb2c96088280fb29dd93a0b2' # (string subdomain, address pluginRepo)
+DAORegistered: '0xbc0b11fe649bb4d67c7fb40936163e5423f45c3ae83fbd8f8f8c75e1a3fa97af' #  (index_topic_1 address dao, index_topic_2 address creator, string subdomain)
